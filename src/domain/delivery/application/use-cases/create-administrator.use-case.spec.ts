@@ -24,7 +24,7 @@ const makeSutInput = (
   override: Partial<CreateAdministratorUseCaseInput> = {},
 ): CreateAdministratorUseCaseInput => {
   return {
-    cpf: '12345678910',
+    cpf: '52998224725',
     name: 'Administrator',
     password: '123456',
     ...override,
@@ -61,7 +61,7 @@ describe('CreateAdministratorUseCase', () => {
       output.value?.administrator.id.toString(),
     )
     expect(administratorRepository.itens[0].name).toEqual(input.name)
-    expect(administratorRepository.itens[0].cpf).toEqual(input.cpf)
+    expect(administratorRepository.itens[0].cpf.value).toEqual(input.cpf)
   })
 
   it('should be able to return administrator when create new administrator', async () => {
@@ -72,7 +72,7 @@ describe('CreateAdministratorUseCase', () => {
     expect(output.value?.administrator).toEqual(
       expect.objectContaining({
         id: expect.any(Object),
-        cpf: input.cpf,
+        cpf: expect.any(Object),
         name: input.name,
         password: expect.any(String),
         role: Roles.ADMINISTRATOR,

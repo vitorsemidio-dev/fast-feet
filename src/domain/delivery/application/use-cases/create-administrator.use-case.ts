@@ -2,6 +2,7 @@ import { Either, right } from '@/core/either'
 import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
 import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
+import { CPF } from '../../enterprise/entities/value-objects/cpf'
 
 export type CreateAdministratorUseCaseInput = {
   cpf: string
@@ -29,7 +30,7 @@ export class CreateAdministratorUseCase {
   }: CreateAdministratorUseCaseInput): Promise<CreateAdministratorUseCaseOutput> {
     const passwordHashed = await this.hashGenerator.hash(password)
     const administrator = Administrator.create({
-      cpf,
+      cpf: CPF.create(cpf),
       name,
       password: passwordHashed,
     })
