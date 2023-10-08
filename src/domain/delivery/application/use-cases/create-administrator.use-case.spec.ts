@@ -2,6 +2,7 @@ import {
   CreateAdministratorUseCase,
   CreateAdministratorUseCaseInput,
 } from '@/domain/delivery/application/use-cases/create-administrator.use-case'
+import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
 
 const makeSut = () => {
@@ -53,5 +54,21 @@ describe('CreateAdministratorUseCase', () => {
     )
     expect(administratorRepository.itens[0].name).toEqual(input.name)
     expect(administratorRepository.itens[0].cpf).toEqual(input.cpf)
+  })
+
+  it('should be able to return administrator when create new administrator', async () => {
+    const input = makeSutInput()
+
+    const output = await sut.execute(input)
+
+    expect(output.value?.administrator).toEqual(
+      expect.objectContaining({
+        id: expect.any(Object),
+        cpf: input.cpf,
+        name: input.name,
+        password: input.password,
+        role: Roles.ADMINISTRATOR,
+      }),
+    )
   })
 })
