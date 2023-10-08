@@ -17,6 +17,10 @@ export class CPF {
     this._value = CPF.unformat(value)
   }
 
+  static create(value: string): CPF {
+    return new CPF(value)
+  }
+
   get value() {
     return this._value
   }
@@ -26,7 +30,9 @@ export class CPF {
     if (!isValid) {
       throw new InvalidCPFError(`${value}`)
     }
-    return value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+
+    const _value = CPF.normalizeCPF(value)
+    return _value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
   }
 
   static unformat(value: string): string {
@@ -34,11 +40,13 @@ export class CPF {
     if (!isValid) {
       throw new InvalidCPFError(`${value}`)
     }
-    return value.replace(/\D/g, '')
+    const _value = CPF.normalizeCPF(value)
+    return _value.replace(/\D/g, '')
   }
 
-  static create(value: string): CPF {
-    return new CPF(value)
+  static normalizeCPF(value: string | number): string {
+    const cpf = value.toString().replace(/\D/g, '')
+    return cpf.padStart(11, '0')
   }
 
   /**
@@ -52,7 +60,8 @@ export class CPF {
    * @returns {boolean} True se o CPF é válido, caso contrário, False.
    */
   static validate(cpf: string): boolean {
-    cpf = cpf.replace(/\D/g, '')
+    const _value = CPF.normalizeCPF(cpf)
+    cpf = _value.replace(/\D/g, '')
 
     if (cpf.length !== 11) {
       return false
