@@ -1,5 +1,6 @@
 import { Either, right } from '@/core/either'
 import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
+import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
 
 export type CreateAdministratorUseCaseInput = {
@@ -18,6 +19,7 @@ export type CreateAdministratorUseCaseOutput = Either<
 export class CreateAdministratorUseCase {
   constructor(
     private readonly administratorsRepository: AdministratorsRepository,
+    private readonly hashGenerator: HashGenerator,
   ) {}
 
   async execute({
@@ -25,10 +27,11 @@ export class CreateAdministratorUseCase {
     name,
     password,
   }: CreateAdministratorUseCaseInput): Promise<CreateAdministratorUseCaseOutput> {
+    const passwordHashed = await this.hashGenerator.hash(password)
     const administrator = Administrator.create({
       cpf,
       name,
-      password,
+      password: passwordHashed,
     })
 
     await this.administratorsRepository.create(administrator)
