@@ -1,4 +1,5 @@
 import { Either, right } from '@/core/either'
+import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
 
 export type CreateAdministratorUseCaseInput = {
@@ -15,6 +16,10 @@ export type CreateAdministratorUseCaseOutput = Either<
 >
 
 export class CreateAdministratorUseCase {
+  constructor(
+    private readonly administratorsRepository: AdministratorsRepository,
+  ) {}
+
   async execute({
     cpf,
     name,
@@ -25,6 +30,8 @@ export class CreateAdministratorUseCase {
       name,
       password,
     })
+
+    await this.administratorsRepository.create(administrator)
 
     return right({ administrator })
   }
