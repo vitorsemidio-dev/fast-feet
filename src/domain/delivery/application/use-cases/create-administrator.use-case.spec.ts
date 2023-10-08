@@ -1,5 +1,8 @@
+import {
+  CreateAdministratorUseCase,
+  CreateAdministratorUseCaseInput,
+} from '@/domain/delivery/application/use-cases/create-administrator.use-case'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
-import { CreateAdministratorUseCase } from './create-administrator.use-case'
 
 const makeSut = () => {
   const administratorRepository = new InMemoryAdministratorsRepository()
@@ -7,6 +10,17 @@ const makeSut = () => {
   return {
     sut,
     administratorRepository,
+  }
+}
+
+const makeSutInput = (
+  override: Partial<CreateAdministratorUseCaseInput> = {},
+): CreateAdministratorUseCaseInput => {
+  return {
+    cpf: '12345678910',
+    name: 'Administrator',
+    password: '123456',
+    ...override,
   }
 }
 
@@ -21,11 +35,7 @@ describe('CreateAdministratorUseCase', () => {
   })
 
   it('should be able to create new administrator', async () => {
-    const input = {
-      name: 'Administrator',
-      cpf: '12345678910',
-      password: '123456',
-    }
+    const input = makeSutInput()
 
     const output = await sut.execute(input)
 
@@ -33,11 +43,7 @@ describe('CreateAdministratorUseCase', () => {
   })
 
   it('should be able to persist new administrator', async () => {
-    const input = {
-      name: 'Administrator',
-      cpf: '12345678910',
-      password: '123456',
-    }
+    const input = makeSutInput()
 
     const output = await sut.execute(input)
 
