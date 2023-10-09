@@ -6,3 +6,21 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  ADMINISTRATOR
+  DELIVERY_DRIVER
+  RECIPIENT
+}
+
+model User {
+  id        String   @id @default(uuid())
+  cpf       String   @unique
+  name      String
+  password  String
+  role      Role     @default(RECIPIENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
