@@ -2,9 +2,10 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { CPF } from './value-objects/cpf'
 
-interface AdministratorProps {
-  cpf: string
+export interface AdministratorProps {
+  cpf: CPF
   name: string
   password: string
   role: Roles.ADMINISTRATOR
