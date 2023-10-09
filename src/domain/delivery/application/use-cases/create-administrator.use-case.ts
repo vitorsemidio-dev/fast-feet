@@ -2,6 +2,7 @@ import { Either, right } from '@/core/either'
 import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
 import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
+import { Injectable } from '@nestjs/common'
 import { CPF } from '../../enterprise/entities/value-objects/cpf'
 
 export type CreateAdministratorUseCaseInput = {
@@ -17,6 +18,7 @@ export type CreateAdministratorUseCaseOutput = Either<
   }
 >
 
+@Injectable()
 export class CreateAdministratorUseCase {
   constructor(
     private readonly administratorsRepository: AdministratorsRepository,

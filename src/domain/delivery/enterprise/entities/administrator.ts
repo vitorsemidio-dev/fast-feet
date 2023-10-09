@@ -4,7 +4,7 @@ import { Optional } from '@/core/types/optional'
 import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
 import { CPF } from './value-objects/cpf'
 
-interface AdministratorProps {
+export interface AdministratorProps {
   cpf: CPF
   name: string
   password: string

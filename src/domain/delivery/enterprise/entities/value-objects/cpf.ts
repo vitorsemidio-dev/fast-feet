@@ -89,4 +89,25 @@ export class CPF {
 
     return secondDigit === parseInt(cpf.charAt(10))
   }
+
+  private static getCPFValids(): string[] {
+    return [
+      '65057795074',
+      '99218741012',
+      '15566482007',
+      '57322330080',
+      '19660151004',
+      '86562937027',
+      '28445056000',
+      '06735254066',
+      '24498716086',
+      '66827101002',
+    ]
+  }
+
+  static makeRandom(): CPF {
+    const cpfs = CPF.getCPFValids()
+    const index = Math.floor(Math.random() * cpfs.length)
+    return CPF.create(cpfs[index])
+  }
 }
