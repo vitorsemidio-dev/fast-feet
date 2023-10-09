@@ -15,6 +15,12 @@ export class PrismaAdministratorsRepository
   }
 
   async findByCPF(cpf: string): Promise<Administrator | null> {
-    return null
+    const result = await this.prismaService.user.findUnique({
+      where: {
+        cpf,
+      },
+    })
+
+    return result ? PrismaAdministratorMapper.toDomain(result) : null
   }
 }

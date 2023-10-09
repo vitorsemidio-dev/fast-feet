@@ -54,4 +54,24 @@ describe('CreateAdministratorUseCase', () => {
       expect(userOnDatabase?.password).not.toEqual(input.password)
     })
   })
+
+  describe('[POST] /administrators', () => {
+    const input = {
+      name: 'Administrator',
+      password: '123456',
+      cpf: CPF.makeRandom().value,
+    }
+    let response: request.Response
+
+    beforeAll(async () => {
+      await request(app.getHttpServer()).post('/administrators').send(input)
+      response = await request(app.getHttpServer())
+        .post('/administrators')
+        .send(input)
+    })
+
+    it('should return status codoe 409 when cpf already exists', async () => {
+      expect(response.statusCode).toBe(409)
+    })
+  })
 })
