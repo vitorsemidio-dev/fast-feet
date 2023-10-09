@@ -5,6 +5,7 @@ import {
 import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
 import { FakeHasher } from 'test/cryptography/faker-hash'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
+import { Administrator } from '../../enterprise/entities/administrator'
 import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
 
 const makeSut = () => {
@@ -56,10 +57,12 @@ describe('CreateAdministratorUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
+    const administrator = (output.value as { administrator: Administrator })
+      ?.administrator
 
     expect(administratorRepository.itens).toHaveLength(1)
     expect(administratorRepository.itens[0].id.toString()).toEqual(
-      output.value?.administrator.id.toString(),
+      administrator.id.toString(),
     )
     expect(administratorRepository.itens[0].name).toEqual(input.name)
     expect(administratorRepository.itens[0].cpf.value).toEqual(input.cpf)
@@ -69,8 +72,10 @@ describe('CreateAdministratorUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
+    const administrator = (output.value as { administrator: Administrator })
+      ?.administrator
 
-    expect(output.value?.administrator).toEqual(
+    expect(administrator).toEqual(
       expect.objectContaining({
         id: expect.any(Object),
         cpf: expect.any(Object),
