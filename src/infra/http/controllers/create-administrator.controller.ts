@@ -1,11 +1,5 @@
 import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
-import {
-  Body,
-  ConflictException,
-  Controller,
-  HttpCode,
-  Post,
-} from '@nestjs/common'
+import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 import { z } from 'zod'
 import { CreateAdministratorUseCase } from '../../../domain/delivery/application/use-cases/create-administrator.use-case'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
@@ -42,7 +36,7 @@ export class CreateAdministratorController {
     })
 
     if (resultOrError.isLeft()) {
-      throw new ConflictException(resultOrError.value.message)
+      throw resultOrError.value
     }
   }
 }
