@@ -5,6 +5,7 @@ import {
 import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
 import { FakeHasher } from 'test/cryptography/faker-hash'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
+import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
 
 const makeSut = () => {
   const administratorRepository = new InMemoryAdministratorsRepository()
@@ -92,5 +93,15 @@ describe('CreateAdministratorUseCase', () => {
     expect(administratorRepository.itens[0].password).toEqual(
       await hashGenerator.hash(input.password),
     )
+  })
+
+  it('should not be able to create new administrator with same cpf', async () => {
+    const input = makeSutInput()
+    await sut.execute(input)
+
+    const output = await sut.execute(input)
+
+    expect(output?.isLeft()).toEqual(true)
+    expect(output?.value).instanceOf(CPFAlreadyExistsError)
   })
 })

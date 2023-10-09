@@ -2,4 +2,5 @@ import { Administrator } from '@/domain/delivery/enterprise/entities/administrat
 
 export abstract class AdministratorsRepository {
   abstract create(administrator: Administrator): Promise<void>
+  abstract findByCPF(cpf: string): Promise<Administrator | null>
 }

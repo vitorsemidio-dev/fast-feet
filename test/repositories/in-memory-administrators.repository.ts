@@ -8,4 +8,8 @@ export class InMemoryAdministratorsRepository
   async create(administrator: Administrator): Promise<void> {
     this.itens.push(administrator)
   }
+
+  async findByCPF(cpf: string): Promise<Administrator | null> {
+    return this.itens.find((item) => item.cpf.value === cpf) ?? null
+  }
 }
