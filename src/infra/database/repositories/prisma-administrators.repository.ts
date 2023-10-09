@@ -13,4 +13,8 @@ export class PrismaAdministratorsRepository
     const data = PrismaAdministratorMapper.toPersistence(administrator)
     await this.prismaService.user.create({ data })
   }
+
+  async findByCPF(cpf: string): Promise<Administrator | null> {
+    return null
+  }
 }

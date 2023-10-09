@@ -22,29 +22,36 @@ describe('CreateAdministratorUseCase', () => {
     await app.init()
   })
 
-  test('[POST] /administrators', async () => {
+  describe('[POST] /administrators', () => {
     const input = {
       name: 'Administrator',
       password: '123456',
       cpf: CPF.makeRandom().value,
     }
+    let response: request.Response
 
-    const response = await request(app.getHttpServer())
-      .post('/administrators')
-      .send(input)
-
-    expect(response.statusCode).toBe(201)
-
-    const userOnDatabase = await prisma.user.findUnique({
-      where: {
-        cpf: input.cpf,
-      },
+    beforeAll(async () => {
+      response = await request(app.getHttpServer())
+        .post('/administrators')
+        .send(input)
     })
 
-    expect(userOnDatabase).toBeTruthy()
-    expect(userOnDatabase?.name).toEqual(input.name)
-    expect(userOnDatabase?.cpf).toEqual(input.cpf)
-    expect(userOnDatabase?.role).toEqual(Roles.ADMINISTRATOR)
-    expect(userOnDatabase?.password).not.toEqual(input.password)
+    it('should return status code 201 when create', async () => {
+      expect(response.statusCode).toBe(201)
+    })
+
+    it('should persiste data on database', async () => {
+      const userOnDatabase = await prisma.user.findUnique({
+        where: {
+          cpf: input.cpf,
+        },
+      })
+
+      expect(userOnDatabase).toBeTruthy()
+      expect(userOnDatabase?.name).toEqual(input.name)
+      expect(userOnDatabase?.cpf).toEqual(input.cpf)
+      expect(userOnDatabase?.role).toEqual(Roles.ADMINISTRATOR)
+      expect(userOnDatabase?.password).not.toEqual(input.password)
+    })
   })
 })
