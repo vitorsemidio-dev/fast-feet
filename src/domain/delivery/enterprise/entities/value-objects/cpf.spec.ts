@@ -48,4 +48,13 @@ describe('CPF', () => {
   it('should not be able to unformat a CPF with invalid value', () => {
     expect(() => CPF.unformat('123.456.789-10')).toThrow(InvalidCPFError)
   })
+
+  it('should validate all cpf from CPF.getCPFValids() method', () => {
+    const cpfs = CPF['getCPFValids']()
+    const resultValids = cpfs.map((cpf) => {
+      return CPF.validate(cpf)
+    })
+    const valids = resultValids.filter((valid) => valid === true)
+    expect(valids.length).toEqual(resultValids.length)
+  })
 })
