@@ -2,9 +2,9 @@ import {
   AuthenticateUseCase,
   AuthenticateUseCaseInput,
 } from '@/domain/delivery/application/use-cases/authenticate.use-case'
-import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import { FakeHasher } from 'test/cryptography/faker-hash'
+import { makeAdministrator } from 'test/factories/administrator.factory'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
 import { Administrator } from '../../enterprise/entities/administrator'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
@@ -50,15 +50,22 @@ describe('AuthenticateUseCase', () => {
     encrypter = dependencies.encrypter
   })
 
+  let administrator: Administrator
+  beforeEach(async () => {
+    administrator = makeAdministrator()
+    const passwordHash = await hashGenerator.hash(administrator.password)
+    const _administrator = makeAdministrator({
+      ...administrator.toJson(),
+      password: passwordHash,
+    })
+    await administratorRepository.create(_administrator)
+  })
+
   it('should be able to generate token when authenticate', async () => {
-    const input = makeSutInput()
-    await administratorRepository.create(
-      Administrator.create({
-        cpf: CPF.create(input.cpf),
-        name: 'Administrator',
-        password: await hashGenerator.hash(input.password),
-      }),
-    )
+    const input = makeSutInput({
+      cpf: administrator.cpf.value,
+      password: administrator.password,
+    })
 
     const output = await sut.execute(input)
 
@@ -70,8 +77,11 @@ describe('AuthenticateUseCase', () => {
     )
   })
 
-  it('should be able to return undefined when authenticate with invalid credentials', async () => {
-    const input = makeSutInput({ password: 'invalid_password' })
+  it('should be able to throw WrongCredentialsError when provide wrong password', async () => {
+    const input = makeSutInput({
+      cpf: administrator.cpf.value,
+      password: 'worng_password',
+    })
 
     const output = await sut.execute(input)
 
@@ -79,8 +89,20 @@ describe('AuthenticateUseCase', () => {
     expect(output.value).toBeInstanceOf(WrongCredentialsError)
   })
 
-  it('should be able to return undefined when authenticate with invalid cpf', async () => {
-    const input = makeSutInput({ cpf: 'invalid_cpf' })
+  it('should be able to throw WrongCredentialsError when provide wrong cpf', async () => {
+    const input = makeSutInput({
+      cpf: 'wront_cpf',
+      password: administrator.password,
+    })
+
+    const output = await sut.execute(input)
+
+    expect(output?.isLeft()).toEqual(true)
+    expect(output.value).toBeInstanceOf(WrongCredentialsError)
+  })
+
+  it('should be able to throw WrongCredentialsError when provide cpf that does not exist', async () => {
+    const input = makeSutInput({ cpf: 'any_cpf', password: 'any_password' })
 
     const output = await sut.execute(input)
 
