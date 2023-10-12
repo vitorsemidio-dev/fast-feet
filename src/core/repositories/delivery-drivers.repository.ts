@@ -6,4 +6,5 @@ export abstract class DeliveryDriversRepository {
   abstract findByCPF(cpf: string): Promise<DeliveryDriver | null>
   abstract findById(id: string): Promise<DeliveryDriver | null>
   abstract findMany(): Promise<DeliveryDriver[]>
+  abstract update(deliveryDriver: DeliveryDriver): Promise<void>
 }
