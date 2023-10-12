@@ -6,7 +6,7 @@ import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 
-describe('CreateAdministratorUseCase', () => {
+describe('CreateAdministratorController (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
 
