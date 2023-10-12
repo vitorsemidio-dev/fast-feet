@@ -58,4 +58,16 @@ export class DeliveryDriver extends Entity<DeliveryDriverProps> {
       role: this.role,
     }
   }
+
+  clone() {
+    return DeliveryDriver.create(
+      {
+        cpf: this.cpf,
+        name: this.name,
+        password: this.password,
+        role: this.role,
+      },
+      this.id,
+    )
+  }
 }
