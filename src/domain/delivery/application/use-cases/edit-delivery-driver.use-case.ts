@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 export type EditDeliveryDriverUseCaseInput = {
   deliveryDriverId: string
+  name: string
 }
 
 export type EditDeliveryDriverUseCaseOutput = Either<
@@ -21,6 +22,7 @@ export class EditDeliveryDriverUseCase {
 
   async execute({
     deliveryDriverId,
+    name,
   }: EditDeliveryDriverUseCaseInput): Promise<EditDeliveryDriverUseCaseOutput> {
     const deliveryDriver =
       await this.deliveryDriversRepository.findById(deliveryDriverId)
@@ -28,6 +30,10 @@ export class EditDeliveryDriverUseCase {
     if (!deliveryDriver) {
       return left(new ResourceNotFoundError(deliveryDriverId))
     }
+
+    deliveryDriver.name = name
+
+    await this.deliveryDriversRepository.update(deliveryDriver)
 
     return {} as any
   }

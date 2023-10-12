@@ -28,4 +28,19 @@ export class InMemoryDeliveryDriversRepository
   async findMany(): Promise<DeliveryDriver[]> {
     return this.itens
   }
+
+  async update(deliveryDriver: DeliveryDriver): Promise<void> {
+    const index = this.itens.findIndex(
+      (item) => item.id.toString() === deliveryDriver.id.toString(),
+    )
+    if (index === -1) {
+      throw new Error('DeliveryDriver not found')
+    }
+    this.itens = this.itens.map((item) => {
+      if (item.id.toString() === deliveryDriver.id.toString()) {
+        return deliveryDriver
+      }
+      return item
+    })
+  }
 }
