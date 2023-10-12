@@ -39,7 +39,7 @@ describe('EditDeliveryDriverUseCase', () => {
     expect(sut).toBeDefined()
   })
 
-  it('should be able to update delivery driver', async () => {
+  it('should be able to update delivery driver and persiste on database', async () => {
     const deliveryDriver = makeDeliveryDriver(
       {
         name: 'old-name',
