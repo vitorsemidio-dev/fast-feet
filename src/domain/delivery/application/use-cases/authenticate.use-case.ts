@@ -1,5 +1,6 @@
 import { Either, left, right } from '@/core/either'
 import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
+import { Injectable } from '@nestjs/common'
 import { Encrypter } from '../cryptography/encrypter'
 import { HashComparer } from '../cryptography/hash-comparer'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
@@ -16,6 +17,7 @@ export type AuthenticateUseCaseOutput = Either<
   }
 >
 
+@Injectable()
 export class AuthenticateUseCase {
   constructor(
     private readonly administratorsRepository: AdministratorsRepository,

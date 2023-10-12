@@ -1,4 +1,5 @@
 import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
+import { Public } from '@/infra/auth/public'
 import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 import { z } from 'zod'
 import { CreateAdministratorUseCase } from '../../../domain/delivery/application/use-cases/create-administrator.use-case'
@@ -17,6 +18,7 @@ export type CreateAdministratorBody = z.infer<
 >
 
 @Controller('administrators')
+@Public()
 export class CreateAdministratorController {
   constructor(
     private readonly createAdministratorUseCase: CreateAdministratorUseCase,
