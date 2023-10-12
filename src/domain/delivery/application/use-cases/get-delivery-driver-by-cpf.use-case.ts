@@ -18,13 +18,13 @@ export type GetDeliveryDrivierByCPFUseCaseOutput = Either<
 @Injectable()
 export class GetDeliveryDrivierByCPFUseCase {
   constructor(
-    private readonly deliverydriversRepository: DeliveryDriversRepository,
+    private readonly deliveryDriversRepository: DeliveryDriversRepository,
   ) {}
 
   async execute({
     cpf,
   }: GetDeliveryDrivierByCPFUseCaseInput): Promise<GetDeliveryDrivierByCPFUseCaseOutput> {
-    const result = await this.deliverydriversRepository.findByCPF(cpf)
+    const result = await this.deliveryDriversRepository.findByCPF(cpf)
 
     if (!result) {
       return left(new ResourceNotFoundError(cpf))

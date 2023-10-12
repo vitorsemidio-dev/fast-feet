@@ -15,13 +15,13 @@ export type FetchDeliveryDriverUseCaseOutput = Either<
 @Injectable()
 export class FetchDeliveryDriverUseCase {
   constructor(
-    private readonly deliverydriversRepository: DeliveryDriversRepository,
+    private readonly deliveryDriversRepository: DeliveryDriversRepository,
   ) {}
 
   async execute(
     params?: FetchDeliveryDriverUseCaseInput,
   ): Promise<FetchDeliveryDriverUseCaseOutput> {
-    const result = await this.deliverydriversRepository.findMany()
+    const result = await this.deliveryDriversRepository.findMany()
 
     const deliveryDrivers = result
     return right({ deliveryDrivers })

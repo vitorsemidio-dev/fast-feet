@@ -22,7 +22,7 @@ export type CreateDeliveryDriverUseCaseOutput = Either<
 @Injectable()
 export class CreateDeliveryDriverUseCase {
   constructor(
-    private readonly deliverydriversRepository: DeliveryDriversRepository,
+    private readonly deliveryDriversRepository: DeliveryDriversRepository,
     private readonly hashGenerator: HashGenerator,
   ) {}
 
@@ -32,7 +32,7 @@ export class CreateDeliveryDriverUseCase {
     password,
   }: CreateDeliveryDriverUseCaseInput): Promise<CreateDeliveryDriverUseCaseOutput> {
     const deliveryDriverAlreadyExists =
-      await this.deliverydriversRepository.findByCPF(cpf)
+      await this.deliveryDriversRepository.findByCPF(cpf)
     if (deliveryDriverAlreadyExists) {
       return left(new CPFAlreadyExistsError(cpf))
     }
@@ -43,7 +43,7 @@ export class CreateDeliveryDriverUseCase {
       password: passwordHashed,
     })
 
-    await this.deliverydriversRepository.create(deliveryDriver)
+    await this.deliveryDriversRepository.create(deliveryDriver)
 
     return right({ deliveryDriver })
   }
