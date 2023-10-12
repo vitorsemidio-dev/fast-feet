@@ -1,4 +1,4 @@
-import { Either, left } from '@/core/either'
+import { Either, left, right } from '@/core/either'
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
 import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
@@ -35,6 +35,8 @@ export class EditDeliveryDriverUseCase {
 
     await this.deliveryDriversRepository.update(deliveryDriver)
 
-    return {} as any
+    return right({
+      deliveryDriver,
+    })
   }
 }

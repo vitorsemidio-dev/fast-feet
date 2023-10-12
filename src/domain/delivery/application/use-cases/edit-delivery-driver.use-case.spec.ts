@@ -2,6 +2,7 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
 import { fakerPtBr } from 'test/utils/faker'
+import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import {
   EditDeliveryDriverUseCase,
   EditDeliveryDriverUseCaseInput,
@@ -56,6 +57,31 @@ describe('EditDeliveryDriverUseCase', () => {
 
     const deliveryDriverOnDB = deliveryDriversRepository.itens[0].toJson()
     expect(deliveryDriverOnDB).toEqual(
+      expect.objectContaining({
+        id: 'existing-id',
+        name: 'new-name',
+      }),
+    )
+  })
+
+  it('should return delivery driver updated', async () => {
+    const deliveryDriver = makeDeliveryDriver(
+      {
+        name: 'old-name',
+      },
+      new UniqueEntityId('existing-id'),
+    )
+    await deliveryDriversRepository.create(deliveryDriver)
+
+    const input = makeSutInput({
+      deliveryDriverId: 'existing-id',
+      name: 'new-name',
+    })
+
+    const output = await sut.execute(input)
+    const value = output.value as { deliveryDriver: DeliveryDriver }
+
+    expect(value.deliveryDriver.toJson()).toEqual(
       expect.objectContaining({
         id: 'existing-id',
         name: 'new-name',
