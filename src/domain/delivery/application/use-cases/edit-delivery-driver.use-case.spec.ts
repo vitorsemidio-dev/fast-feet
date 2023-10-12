@@ -1,7 +1,11 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
-import { EditDeliveryDriverUseCase } from './edit-delivery-driver.use-case'
+import { fakerPtBr } from 'test/utils/faker'
+import {
+  EditDeliveryDriverUseCase,
+  EditDeliveryDriverUseCaseInput,
+} from './edit-delivery-driver.use-case'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 const makeSut = () => {
@@ -10,14 +14,31 @@ const makeSut = () => {
   return { sut, deliveryDriversRepository }
 }
 
+const makeSutInput = (
+  overrider: Partial<EditDeliveryDriverUseCaseInput> = {},
+) => {
+  return {
+    deliveryDriverId: new UniqueEntityId().toString(),
+    name: fakerPtBr.name.fullName(),
+    ...overrider,
+  }
+}
+
 describe('EditDeliveryDriverUseCase', () => {
+  let sut: EditDeliveryDriverUseCase
+  let deliveryDriversRepository: InMemoryDeliveryDriversRepository
+
+  beforeEach(() => {
+    const dependencies = makeSut()
+    sut = dependencies.sut
+    deliveryDriversRepository = dependencies.deliveryDriversRepository
+  })
+
   it('should be defined', () => {
-    const { sut } = makeSut()
     expect(sut).toBeDefined()
   })
 
   it('should be able to update delivery driver', async () => {
-    const { sut, deliveryDriversRepository } = makeSut()
     const deliveryDriver = makeDeliveryDriver(
       {
         name: 'old-name',
@@ -26,13 +47,14 @@ describe('EditDeliveryDriverUseCase', () => {
     )
     await deliveryDriversRepository.create(deliveryDriver)
 
-    await sut.execute({
+    const input = makeSutInput({
       deliveryDriverId: 'existing-id',
       name: 'new-name',
     })
 
-    const deliveryDriverOnDB = deliveryDriversRepository.itens[0].toJson()
+    await sut.execute(input)
 
+    const deliveryDriverOnDB = deliveryDriversRepository.itens[0].toJson()
     expect(deliveryDriverOnDB).toEqual(
       expect.objectContaining({
         id: 'existing-id',
@@ -42,23 +64,17 @@ describe('EditDeliveryDriverUseCase', () => {
   })
 
   it('should return ResourceNotFoundError if delivery driver does not exists', async () => {
-    const { sut } = makeSut()
+    const input = makeSutInput({ deliveryDriverId: 'non-existing-id' })
 
-    const output = await sut.execute({
-      deliveryDriverId: 'non-existing-id',
-      name: 'any-name',
-    })
+    const output = await sut.execute(input)
 
     expect(output.value).toBeInstanceOf(ResourceNotFoundError)
   })
 
   it('should is left if delivery driver does not exists', async () => {
-    const { sut } = makeSut()
+    const input = makeSutInput({ deliveryDriverId: 'non-existing-id' })
 
-    const output = await sut.execute({
-      deliveryDriverId: 'non-existing-id',
-      name: 'any-name',
-    })
+    const output = await sut.execute(input)
 
     expect(output.isLeft()).toBeTruthy()
   })
