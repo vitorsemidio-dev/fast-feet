@@ -7,7 +7,7 @@ import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { fakerPtBr } from 'test/utils/faker'
 
 export function makeAdministrator(
-  override: Partial<AdministratorProps> = {},
+  override: Partial<AdministratorProps> | Administrator = {},
   id?: UniqueEntityId,
 ): Administrator {
   const administrator = Administrator.create(

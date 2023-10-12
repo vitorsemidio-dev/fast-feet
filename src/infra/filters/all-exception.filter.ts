@@ -1,4 +1,5 @@
 import { CPFAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/cpf-already-exists.error'
+import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error'
 import {
   ArgumentsHost,
   BadRequestException,
@@ -35,6 +36,10 @@ export class AllExceptionFilter implements ExceptionFilter {
     let logInConsole = true
 
     switch (exception.constructor) {
+      case WrongCredentialsError:
+        status = HttpStatus.UNAUTHORIZED
+        message = (exception as WrongCredentialsError).message
+        break
       case CPFAlreadyExistsError:
         status = HttpStatus.CONFLICT
         message = (exception as CPFAlreadyExistsError).message
