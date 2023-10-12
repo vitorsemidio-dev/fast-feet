@@ -104,9 +104,9 @@ export class CPF {
     ]
   }
 
-  static makeRandom(): CPF {
+  static makeRandom(_index?: number): CPF {
     const cpfs = CPF.getCPFValids()
     const index = Math.floor(Math.random() * cpfs.length)
-    return CPF.create(cpfs[index])
+    return CPF.create(cpfs[_index ?? index])
   }
 }
