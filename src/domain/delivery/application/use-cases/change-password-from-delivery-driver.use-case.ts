@@ -1,13 +1,15 @@
 import { Either, left } from '@/core/either'
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
+import { WrongPasswordError } from './errors/wrong-password.error'
 
-type ChangePasswordFromDeliveryDriverUseCaseInput = {
+export type ChangePasswordFromDeliveryDriverUseCaseInput = {
   deliveryDriverId: string
+  oldPassword: string
 }
 
-type ChangePasswordFromDeliveryDriverUseCaseOutput = Either<
-  ResourceNotFoundError,
+export type ChangePasswordFromDeliveryDriverUseCaseOutput = Either<
+  ResourceNotFoundError | WrongPasswordError,
   void
 >
 
@@ -24,6 +26,6 @@ export class ChangePasswordFromDeliveryDriverUseCase {
     if (!deliveryDriver) {
       return left(new ResourceNotFoundError(deliveryDriverId))
     }
-    return {} as any
+    return left(new WrongPasswordError())
   }
 }
