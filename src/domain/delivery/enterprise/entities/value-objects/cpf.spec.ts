@@ -57,4 +57,18 @@ describe('CPF', () => {
     const valids = resultValids.filter((valid) => valid === true)
     expect(valids.length).toEqual(resultValids.length)
   })
+
+  it('should be able call makeRandom method providing an index', () => {
+    const cpf0 = CPF.makeRandom(0)
+    const cpf1 = CPF.makeRandom(1)
+
+    expect(cpf0.value).toEqual(CPF['getCPFValids']()[0])
+    expect(cpf1.value).toEqual(CPF['getCPFValids']()[1])
+  })
+
+  it('should be able to call makeRandom method and return randomCPF', () => {
+    const cpf = CPF.makeRandom()
+
+    expect(cpf.value).toEqual(expect.any(String))
+  })
 })

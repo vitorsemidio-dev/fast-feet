@@ -12,4 +12,8 @@ export class InMemoryDeliveryDriversRepository
   async findByCPF(cpf: string): Promise<DeliveryDriver | null> {
     return this.itens.find((item) => item.cpf.value === cpf) ?? null
   }
+
+  async findMany(): Promise<DeliveryDriver[]> {
+    return this.itens
+  }
 }
