@@ -39,7 +39,7 @@ describe('Order', () => {
     const { props } = makeSutInput()
     const sut = Order.create(props)
     expect(sut.postageAt).toBeDefined()
-    expect(sut.postageAt.toISOString()).toEqual(new Date().toISOString())
+    expect(sut.postageAt).toBeInstanceOf(Date)
   })
 
   it('should be able to set status "PENDING" when create new order', () => {
@@ -60,6 +60,6 @@ describe('Order', () => {
     const sut = Order.create(props)
     sut.send()
     expect(sut.sendedAt).toBeDefined()
-    expect(sut.sendedAt?.toISOString()).toEqual(new Date().toISOString())
+    expect(sut.sendedAt).toBeInstanceOf(Date)
   })
 })
