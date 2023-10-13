@@ -47,4 +47,11 @@ describe('Order', () => {
     const sut = Order.create(props)
     expect(sut.status).toEqual(OrderStatus.PENDING)
   })
+
+  it('should be able to set status "SENDED" when call "send"', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    sut.send()
+    expect(sut.status).toEqual(OrderStatus.SENDED)
+  })
 })

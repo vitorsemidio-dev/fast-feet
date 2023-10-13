@@ -38,6 +38,10 @@ export class Order extends Entity<OrderProps> {
     return this.props.status
   }
 
+  send() {
+    this.props.status = OrderStatus.SENDED
+  }
+
   toJson() {
     return {}
   }
