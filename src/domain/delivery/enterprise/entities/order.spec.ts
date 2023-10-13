@@ -94,4 +94,15 @@ describe('Order', () => {
     expect(sut.deliveryBy).toBeInstanceOf(UniqueEntityId)
     expect(sut.deliveryBy?.toString()).toEqual('delivery-driver-id')
   })
+
+  it('should be able to validate if sendedBy is the same deliveryBy', () => {
+    const { props } = makeSutInput({
+      sendedBy: new UniqueEntityId('delivery-driver-id'),
+    })
+    const sut = Order.create(props)
+    sut.delivery(new UniqueEntityId('delivery-driver-id'))
+    expect(sut.deliveryBy).toBeDefined()
+    expect(sut.sendedBy).toBeDefined()
+    expect(sut.deliveryBy?.toString()).toEqual(sut.sendedBy?.toString())
+  })
 })
