@@ -34,4 +34,11 @@ describe('Order', () => {
     const sut = Order.create(props)
     expect(sut.id.toString()).toBeDefined()
   })
+
+  it('should be able to fill "postageAt" when create new order', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    expect(sut.postageAt).toBeDefined()
+    expect(sut.postageAt.toISOString()).toEqual(new Date().toISOString())
+  })
 })
