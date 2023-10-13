@@ -22,4 +22,16 @@ describe('Order', () => {
     const sut = Order.create(props)
     expect(sut).toBeDefined()
   })
+
+  it('should be able to provide id when create new order', () => {
+    const { props, id } = makeSutInput({}, new UniqueEntityId('order-id'))
+    const sut = Order.create(props, id)
+    expect(sut.id.toString()).toEqual('order-id')
+  })
+
+  it('should be able to generate id when create new order', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    expect(sut.id.toString()).toBeDefined()
+  })
 })
