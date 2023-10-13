@@ -1,11 +1,11 @@
 import {
   CreateAdministratorUseCase,
   CreateAdministratorUseCaseInput,
+  CreateAdministratorUseCaseOutput,
 } from '@/domain/delivery/application/use-cases/create-administrator.use-case'
 import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
 import { FakeHasher } from 'test/cryptography/faker-hash'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
-import { Administrator } from '../../enterprise/entities/administrator'
 import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
 
 const makeSut = () => {
@@ -33,6 +33,13 @@ const makeSutInput = (
   }
 }
 
+const getRight = (output: CreateAdministratorUseCaseOutput) => {
+  if (output.isLeft()) {
+    throw output.value
+  }
+  return output
+}
+
 describe('CreateAdministratorUseCase', () => {
   let sut: CreateAdministratorUseCase
   let administratorRepository: InMemoryAdministratorsRepository
@@ -57,12 +64,11 @@ describe('CreateAdministratorUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
-    const administrator = (output.value as { administrator: Administrator })
-      ?.administrator
+    const { value } = getRight(output)
 
     expect(administratorRepository.itens).toHaveLength(1)
     expect(administratorRepository.itens[0].id.toString()).toEqual(
-      administrator.id.toString(),
+      value.administrator.id.toString(),
     )
     expect(administratorRepository.itens[0].name).toEqual(input.name)
     expect(administratorRepository.itens[0].cpf.value).toEqual(input.cpf)
@@ -72,10 +78,9 @@ describe('CreateAdministratorUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
-    const administrator = (output.value as { administrator: Administrator })
-      ?.administrator
+    const { value } = getRight(output)
 
-    expect(administrator).toEqual(
+    expect(value.administrator).toEqual(
       expect.objectContaining({
         id: expect.any(Object),
         cpf: expect.any(Object),

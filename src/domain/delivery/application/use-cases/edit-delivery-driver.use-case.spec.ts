@@ -2,10 +2,10 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
 import { fakerPtBr } from 'test/utils/faker'
-import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import {
   EditDeliveryDriverUseCase,
   EditDeliveryDriverUseCaseInput,
+  EditDeliveryDriverUseCaseOutput,
 } from './edit-delivery-driver.use-case'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
@@ -23,6 +23,13 @@ const makeSutInput = (
     name: fakerPtBr.name.fullName(),
     ...overrider,
   }
+}
+
+const getRight = (output: EditDeliveryDriverUseCaseOutput) => {
+  if (output.isLeft()) {
+    throw output.value
+  }
+  return output
 }
 
 describe('EditDeliveryDriverUseCase', () => {
@@ -79,7 +86,7 @@ describe('EditDeliveryDriverUseCase', () => {
     })
 
     const output = await sut.execute(input)
-    const value = output.value as { deliveryDriver: DeliveryDriver }
+    const { value } = getRight(output)
 
     expect(value.deliveryDriver.toJson()).toEqual(
       expect.objectContaining({

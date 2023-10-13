@@ -3,7 +3,10 @@ import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-d
 import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import { CPF } from '../../enterprise/entities/value-objects/cpf'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
-import { GetDeliveryDrivierByCPFUseCase } from './get-delivery-driver-by-cpf.use-case'
+import {
+  GetDeliveryDrivierByCPFUseCase,
+  GetDeliveryDrivierByCPFUseCaseOutput,
+} from './get-delivery-driver-by-cpf.use-case'
 
 const makeSut = () => {
   const deliveryDriverRepository = new InMemoryDeliveryDriversRepository()
@@ -12,6 +15,13 @@ const makeSut = () => {
     sut,
     deliveryDriverRepository,
   }
+}
+
+const getRight = (output: GetDeliveryDrivierByCPFUseCaseOutput) => {
+  if (output.isLeft()) {
+    throw output.value
+  }
+  return output
 }
 
 describe('GetDeliveryDrivierByCPFUseCase', () => {
@@ -54,9 +64,9 @@ describe('GetDeliveryDrivierByCPFUseCase', () => {
       cpf: deliveryDriverDB2.cpf.value,
     })
 
-    const value0 = output0.value as { deliveryDriver: DeliveryDriver }
-    const value1 = output1.value as { deliveryDriver: DeliveryDriver }
-    const value2 = output2.value as { deliveryDriver: DeliveryDriver }
+    const value0 = getRight(output0).value
+    const value1 = getRight(output1).value
+    const value2 = getRight(output2).value
 
     expect(value0.deliveryDriver).toEqual(deliveryDriverDB0)
     expect(value1.deliveryDriver).toEqual(deliveryDriverDB1)
@@ -71,7 +81,7 @@ describe('GetDeliveryDrivierByCPFUseCase', () => {
     const output = await sut.execute({
       cpf: deliveryDriverDB.cpf.value,
     })
-    const value = output.value as { deliveryDriver: DeliveryDriver }
+    const { value } = getRight(output)
 
     expect(value?.deliveryDriver).toBeInstanceOf(DeliveryDriver)
   })
