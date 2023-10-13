@@ -54,4 +54,12 @@ describe('Order', () => {
     sut.send()
     expect(sut.status).toEqual(OrderStatus.SENDED)
   })
+
+  it('should be able to set "sendedAt" when call "send"', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    sut.send()
+    expect(sut.sendedAt).toBeDefined()
+    expect(sut.sendedAt?.toISOString()).toEqual(new Date().toISOString())
+  })
 })
