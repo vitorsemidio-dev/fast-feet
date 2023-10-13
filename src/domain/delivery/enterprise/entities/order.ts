@@ -7,6 +7,7 @@ export interface OrderProps {
   postageAt: Date
   status: OrderStatus
   sendedAt?: Date
+  sendedBy?: UniqueEntityId
 }
 
 export enum OrderStatus {
@@ -43,9 +44,14 @@ export class Order extends Entity<OrderProps> {
     return this.props.sendedAt
   }
 
-  send() {
+  get sendedBy() {
+    return this.props.sendedBy
+  }
+
+  send(sendedBy: UniqueEntityId) {
     this.props.status = OrderStatus.SENDED
     this.props.sendedAt = new Date()
+    this.props.sendedBy = sendedBy
   }
 
   toJson() {

@@ -51,15 +51,24 @@ describe('Order', () => {
   it('should be able to set status "SENDED" when call "send"', () => {
     const { props } = makeSutInput()
     const sut = Order.create(props)
-    sut.send()
+    sut.send(new UniqueEntityId('delivery-driver-id'))
     expect(sut.status).toEqual(OrderStatus.SENDED)
   })
 
   it('should be able to set "sendedAt" when call "send"', () => {
     const { props } = makeSutInput()
     const sut = Order.create(props)
-    sut.send()
+    sut.send(new UniqueEntityId('delivery-driver-id'))
     expect(sut.sendedAt).toBeDefined()
     expect(sut.sendedAt).toBeInstanceOf(Date)
+  })
+
+  it('should be able to set "sendedBy" with delivery driver id', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    sut.send(new UniqueEntityId('delivery-driver-id'))
+    expect(sut.sendedBy).toBeDefined()
+    expect(sut.sendedBy).toBeInstanceOf(UniqueEntityId)
+    expect(sut.sendedBy?.toString()).toEqual('delivery-driver-id')
   })
 })
