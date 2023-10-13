@@ -75,19 +75,28 @@ describe('Order', () => {
   })
 
   describe('set status "DELIVERED"', () => {
+    const _makeSutInput = (
+      overrider: Partial<OrderProps> = {},
+      id?: UniqueEntityId,
+    ) => {
+      return makeSutInput(
+        {
+          sendedBy: new UniqueEntityId('delivery-driver-id'),
+          status: OrderStatus.SENDED,
+          ...overrider,
+        },
+        id,
+      )
+    }
     it('should be able to set status "DELIVERED" when call "delivery"', () => {
-      const { props } = makeSutInput({
-        sendedBy: new UniqueEntityId('delivery-driver-id'),
-        status: OrderStatus.SENDED,
-      })
+      const { props } = _makeSutInput()
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.status).toEqual(OrderStatus.DELIVERED)
     })
 
     it('should not be able to set status "DELIVERED" if current status is "PENDING"', () => {
-      const { props } = makeSutInput({
-        sendedBy: new UniqueEntityId('delivery-driver-id'),
+      const { props } = _makeSutInput({
         status: OrderStatus.PENDING,
       })
       const sut = Order.create(props)
@@ -98,10 +107,7 @@ describe('Order', () => {
     })
 
     it('should be able to set status "DELIVERED" only if current status is "SENDED"', () => {
-      const { props } = makeSutInput({
-        sendedBy: new UniqueEntityId('delivery-driver-id'),
-        status: OrderStatus.SENDED,
-      })
+      const { props } = _makeSutInput()
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.status).toEqual(OrderStatus.DELIVERED)
@@ -110,10 +116,7 @@ describe('Order', () => {
     })
 
     it('should be able to set status "DELIVERED" only if provide photo_url', () => {
-      const { props } = makeSutInput({
-        sendedBy: new UniqueEntityId('delivery-driver-id'),
-        status: OrderStatus.SENDED,
-      })
+      const { props } = _makeSutInput()
       const sut = Order.create(props)
       const fakePhotoURL = fakerPtBr.internet.url()
       sut.delivery(new UniqueEntityId('delivery-driver-id'), fakePhotoURL)
@@ -122,20 +125,14 @@ describe('Order', () => {
     })
 
     it('should be able to return order instance', () => {
-      const { props } = makeSutInput({
-        sendedBy: new UniqueEntityId('delivery-driver-id'),
-        status: OrderStatus.SENDED,
-      })
+      const { props } = _makeSutInput()
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.deliveryAt).toBeDefined()
       expect(sut.deliveryAt).toBeInstanceOf(Date)
     })
     it('should be able to set "deliveryBy" with delivery driver id', () => {
-      const { props } = makeSutInput({
-        sendedBy: new UniqueEntityId('delivery-driver-id'),
-        status: OrderStatus.SENDED,
-      })
+      const { props } = _makeSutInput()
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.deliveryBy).toBeDefined()
@@ -144,10 +141,7 @@ describe('Order', () => {
     })
 
     it('should be able to validate if sendedBy is the same deliveryBy', () => {
-      const { props } = makeSutInput({
-        sendedBy: new UniqueEntityId('delivery-driver-id'),
-        status: OrderStatus.SENDED,
-      })
+      const { props } = _makeSutInput()
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.deliveryBy).toBeDefined()
