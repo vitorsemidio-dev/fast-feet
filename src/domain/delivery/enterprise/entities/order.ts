@@ -9,6 +9,7 @@ export interface OrderProps {
   deliveryAt?: Date
   sendedAt?: Date
   sendedBy?: UniqueEntityId
+  deliveryBy?: UniqueEntityId
 }
 
 export enum OrderStatus {
@@ -53,15 +54,20 @@ export class Order extends Entity<OrderProps> {
     return this.props.sendedBy
   }
 
+  get deliveryBy() {
+    return this.props.deliveryBy
+  }
+
   send(sendedBy: UniqueEntityId) {
     this.props.status = OrderStatus.SENDED
     this.props.sendedAt = new Date()
     this.props.sendedBy = sendedBy
   }
 
-  delivery() {
+  delivery(deliveryBy: UniqueEntityId) {
     this.props.status = OrderStatus.DELIVERED
     this.props.deliveryAt = new Date()
+    this.props.deliveryBy = deliveryBy
   }
 
   toJson() {
