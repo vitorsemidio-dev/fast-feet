@@ -78,15 +78,41 @@ describe('Order', () => {
     it('should be able to set status "DELIVERED" when call "delivery"', () => {
       const { props } = makeSutInput({
         sendedBy: new UniqueEntityId('delivery-driver-id'),
+        status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'))
       expect(sut.status).toEqual(OrderStatus.DELIVERED)
     })
 
+    it('should not be able to set status "DELIVERED" if current status is "PENDING"', () => {
+      const { props } = makeSutInput({
+        sendedBy: new UniqueEntityId('delivery-driver-id'),
+        status: OrderStatus.PENDING,
+      })
+      const sut = Order.create(props)
+      sut.delivery(new UniqueEntityId('delivery-driver-id'))
+      expect(sut.status).toEqual(OrderStatus.PENDING)
+      expect(sut.deliveryAt).toBeUndefined()
+      expect(sut.deliveryBy).toBeUndefined()
+    })
+
+    it('should be able to set status "DELIVERED" only if current status is "SENDED"', () => {
+      const { props } = makeSutInput({
+        sendedBy: new UniqueEntityId('delivery-driver-id'),
+        status: OrderStatus.SENDED,
+      })
+      const sut = Order.create(props)
+      sut.delivery(new UniqueEntityId('delivery-driver-id'))
+      expect(sut.status).toEqual(OrderStatus.DELIVERED)
+      expect(sut.deliveryAt).toBeDefined()
+      expect(sut.deliveryBy).toBeDefined()
+    })
+
     it('should be able to return order instance', () => {
       const { props } = makeSutInput({
         sendedBy: new UniqueEntityId('delivery-driver-id'),
+        status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'))
@@ -96,6 +122,7 @@ describe('Order', () => {
     it('should be able to set "deliveryBy" with delivery driver id', () => {
       const { props } = makeSutInput({
         sendedBy: new UniqueEntityId('delivery-driver-id'),
+        status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'))
@@ -107,6 +134,7 @@ describe('Order', () => {
     it('should be able to validate if sendedBy is the same deliveryBy', () => {
       const { props } = makeSutInput({
         sendedBy: new UniqueEntityId('delivery-driver-id'),
+        status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'))
