@@ -138,17 +138,10 @@ describe('ChangePasswordFromDeliveryDriverUseCase', () => {
     const deliveryDriver = makeDeliveryDriver({
       password: 'old-password',
     })
-    await deliveryDriversRepository.create(
-      makeDeliveryDriver(
-        {
-          cpf: deliveryDriver.cpf,
-          name: deliveryDriver.name,
-          role: deliveryDriver.role,
-          password: await hashGenerator.hash(deliveryDriver.password),
-        },
-        deliveryDriver.id,
-      ),
-    )
+    const deliveryDriverOnDB = deliveryDriver.clone()
+    deliveryDriverOnDB.password = await hashGenerator.hash('old-password')
+    await deliveryDriversRepository.create(deliveryDriverOnDB)
+
     const input = makeSutInput({
       deliveryDriverId: deliveryDriver.id.toString(),
       oldPassword: 'wrong-old-password',
