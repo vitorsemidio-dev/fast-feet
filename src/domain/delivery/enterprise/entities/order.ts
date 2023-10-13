@@ -5,12 +5,26 @@ import { Optional } from '@/core/types/optional'
 export interface OrderProps {
   name: string
   postageAt: Date
+  status: OrderStatus
+}
+
+export enum OrderStatus {
+  PENDING = 'PENDING',
+  SENDED = 'SENDED',
+  DELIVERED = 'DELIVERED',
 }
 
 export class Order extends Entity<OrderProps> {
-  static create(props: Optional<OrderProps, 'postageAt'>, id?: UniqueEntityId) {
+  static create(
+    props: Optional<OrderProps, 'postageAt' | 'status'>,
+    id?: UniqueEntityId,
+  ) {
     const order = new Order(
-      { ...props, postageAt: props.postageAt ?? new Date() },
+      {
+        ...props,
+        postageAt: props.postageAt ?? new Date(),
+        status: props.status ?? OrderStatus.PENDING,
+      },
       id,
     )
     return order
@@ -18,6 +32,10 @@ export class Order extends Entity<OrderProps> {
 
   get postageAt() {
     return this.props.postageAt
+  }
+
+  get status() {
+    return this.props.status
   }
 
   toJson() {

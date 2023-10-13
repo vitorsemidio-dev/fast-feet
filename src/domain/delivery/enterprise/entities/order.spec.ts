@@ -1,6 +1,6 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { fakerPtBr } from 'test/utils/faker'
-import { Order, OrderProps } from './order'
+import { Order, OrderProps, OrderStatus } from './order'
 
 const makeSutInput = (
   overrider: Partial<OrderProps> = {},
@@ -40,5 +40,11 @@ describe('Order', () => {
     const sut = Order.create(props)
     expect(sut.postageAt).toBeDefined()
     expect(sut.postageAt.toISOString()).toEqual(new Date().toISOString())
+  })
+
+  it('should be able to set status "PENDING" when create new order', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    expect(sut.status).toEqual(OrderStatus.PENDING)
   })
 })
