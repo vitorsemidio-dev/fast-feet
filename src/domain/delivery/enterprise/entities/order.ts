@@ -10,6 +10,7 @@ export interface OrderProps {
   sendedAt?: Date
   sendedBy?: UniqueEntityId
   deliveryBy?: UniqueEntityId
+  photoURL?: string
 }
 
 export enum OrderStatus {
@@ -58,19 +59,23 @@ export class Order extends Entity<OrderProps> {
     return this.props.deliveryBy
   }
 
+  get photoURL() {
+    return this.props.photoURL
+  }
+
   send(sendedBy: UniqueEntityId) {
     this.props.status = OrderStatus.SENDED
     this.props.sendedAt = new Date()
     this.props.sendedBy = sendedBy
   }
 
-  delivery(deliveryBy: UniqueEntityId) {
+  delivery(deliveryBy: UniqueEntityId, photoURL: string) {
     if (this.status !== OrderStatus.SENDED) return
-    if (deliveryBy.toString() === this.sendedBy?.toString()) {
-      this.props.status = OrderStatus.DELIVERED
-      this.props.deliveryAt = new Date()
-      this.props.deliveryBy = deliveryBy
-    }
+    if (deliveryBy.toString() !== this.sendedBy?.toString()) return
+    this.props.status = OrderStatus.DELIVERED
+    this.props.deliveryAt = new Date()
+    this.props.deliveryBy = deliveryBy
+    this.props.photoURL = photoURL
   }
 
   toJson() {

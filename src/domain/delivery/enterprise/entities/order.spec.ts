@@ -81,7 +81,7 @@ describe('Order', () => {
         status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
-      sut.delivery(new UniqueEntityId('delivery-driver-id'))
+      sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.status).toEqual(OrderStatus.DELIVERED)
     })
 
@@ -91,7 +91,7 @@ describe('Order', () => {
         status: OrderStatus.PENDING,
       })
       const sut = Order.create(props)
-      sut.delivery(new UniqueEntityId('delivery-driver-id'))
+      sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.status).toEqual(OrderStatus.PENDING)
       expect(sut.deliveryAt).toBeUndefined()
       expect(sut.deliveryBy).toBeUndefined()
@@ -103,10 +103,22 @@ describe('Order', () => {
         status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
-      sut.delivery(new UniqueEntityId('delivery-driver-id'))
+      sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.status).toEqual(OrderStatus.DELIVERED)
       expect(sut.deliveryAt).toBeDefined()
       expect(sut.deliveryBy).toBeDefined()
+    })
+
+    it('should be able to set status "DELIVERED" only if provide photo_url', () => {
+      const { props } = makeSutInput({
+        sendedBy: new UniqueEntityId('delivery-driver-id'),
+        status: OrderStatus.SENDED,
+      })
+      const sut = Order.create(props)
+      const fakePhotoURL = fakerPtBr.internet.url()
+      sut.delivery(new UniqueEntityId('delivery-driver-id'), fakePhotoURL)
+      expect(sut.photoURL).toBeDefined()
+      expect(sut.photoURL).toEqual(fakePhotoURL)
     })
 
     it('should be able to return order instance', () => {
@@ -115,7 +127,7 @@ describe('Order', () => {
         status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
-      sut.delivery(new UniqueEntityId('delivery-driver-id'))
+      sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.deliveryAt).toBeDefined()
       expect(sut.deliveryAt).toBeInstanceOf(Date)
     })
@@ -125,7 +137,7 @@ describe('Order', () => {
         status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
-      sut.delivery(new UniqueEntityId('delivery-driver-id'))
+      sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.deliveryBy).toBeDefined()
       expect(sut.deliveryBy).toBeInstanceOf(UniqueEntityId)
       expect(sut.deliveryBy?.toString()).toEqual('delivery-driver-id')
@@ -137,7 +149,7 @@ describe('Order', () => {
         status: OrderStatus.SENDED,
       })
       const sut = Order.create(props)
-      sut.delivery(new UniqueEntityId('delivery-driver-id'))
+      sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.deliveryBy).toBeDefined()
       expect(sut.sendedBy).toBeDefined()
       expect(sut.deliveryBy?.toString()).toEqual(sut.sendedBy?.toString())
