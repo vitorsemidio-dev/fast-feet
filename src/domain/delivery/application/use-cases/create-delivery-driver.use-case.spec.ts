@@ -4,6 +4,7 @@ import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import {
   CreateDeliveryDriverUseCase,
   CreateDeliveryDriverUseCaseInput,
+  CreateDeliveryDriverUseCaseOutput,
 } from './create-delivery-driver.use-case'
 import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
 
@@ -30,6 +31,13 @@ const makeSutInput = (
     password: '123456',
     ...override,
   }
+}
+
+const getRight = (output: CreateDeliveryDriverUseCaseOutput) => {
+  if (output.isLeft()) {
+    throw output.value
+  }
+  return output
 }
 
 describe('CreateDeliveryDriverUseCase', () => {
@@ -60,12 +68,11 @@ describe('CreateDeliveryDriverUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
+    const { value } = getRight(output)
 
     expect(deliveryDriverRepository.itens.length).toEqual(1)
     expect(deliveryDriverRepository.itens[0].id.toString()).toEqual(
-      (
-        output.value as { deliveryDriver: DeliveryDriver }
-      )?.deliveryDriver.id.toString(),
+      value.deliveryDriver.id.toString(),
     )
   })
 
@@ -73,10 +80,9 @@ describe('CreateDeliveryDriverUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
+    const { value } = getRight(output)
 
-    expect(
-      (output.value as { deliveryDriver: DeliveryDriver }).deliveryDriver,
-    ).toBeInstanceOf(DeliveryDriver)
+    expect(value.deliveryDriver).toBeInstanceOf(DeliveryDriver)
   })
 
   it('should be able to hash password when create new delivery driver', async () => {
