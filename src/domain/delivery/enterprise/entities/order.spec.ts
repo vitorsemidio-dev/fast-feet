@@ -71,4 +71,11 @@ describe('Order', () => {
     expect(sut.sendedBy).toBeInstanceOf(UniqueEntityId)
     expect(sut.sendedBy?.toString()).toEqual('delivery-driver-id')
   })
+
+  it('should be able to set status "DELIVERED" when call "delivery"', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    sut.delivery()
+    expect(sut.status).toEqual(OrderStatus.DELIVERED)
+  })
 })
