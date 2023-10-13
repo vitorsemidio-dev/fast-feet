@@ -78,4 +78,12 @@ describe('Order', () => {
     sut.delivery()
     expect(sut.status).toEqual(OrderStatus.DELIVERED)
   })
+
+  it('should be able to return order instance', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    sut.delivery()
+    expect(sut.deliveryAt).toBeDefined()
+    expect(sut.deliveryAt).toBeInstanceOf(Date)
+  })
 })

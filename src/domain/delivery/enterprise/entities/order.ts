@@ -6,6 +6,7 @@ export interface OrderProps {
   name: string
   postageAt: Date
   status: OrderStatus
+  deliveryAt?: Date
   sendedAt?: Date
   sendedBy?: UniqueEntityId
 }
@@ -32,6 +33,10 @@ export class Order extends Entity<OrderProps> {
     return order
   }
 
+  get deliveryAt() {
+    return this.props.deliveryAt
+  }
+
   get postageAt() {
     return this.props.postageAt
   }
@@ -56,6 +61,7 @@ export class Order extends Entity<OrderProps> {
 
   delivery() {
     this.props.status = OrderStatus.DELIVERED
+    this.props.deliveryAt = new Date()
   }
 
   toJson() {
