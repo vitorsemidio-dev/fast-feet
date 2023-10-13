@@ -3,6 +3,7 @@ import { FakeHasher } from 'test/cryptography/faker-hash'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
 import { fakerPtBr } from 'test/utils/faker'
+import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import { HashComparer } from '../cryptography/hash-comparer'
 import { HashGenerator } from '../cryptography/hash-generator'
 import {
@@ -100,6 +101,27 @@ describe('ChangePasswordFromDeliveryDriverUseCase', () => {
 
     const output = await sut.execute(input)
 
+    expect(output.isRight()).toBeTruthy()
+  })
+
+  it('should return delivery instance', async () => {
+    const deliveryDriver = makeDeliveryDriver()
+    const deliveryDriverOnDB = deliveryDriver.clone()
+    deliveryDriverOnDB.password = await hashGenerator.hash(
+      deliveryDriver.password,
+    )
+    await deliveryDriversRepository.create(deliveryDriverOnDB)
+
+    const input = makeSutInput({
+      deliveryDriverId: deliveryDriver.id.toString(),
+      oldPassword: deliveryDriver.password,
+      newPassword: 'any-password',
+    })
+
+    const output = await sut.execute(input)
+    const value = output.value as { deliveryDriver: DeliveryDriver }
+
+    expect(value.deliveryDriver).toBeInstanceOf(DeliveryDriver)
     expect(output.isRight()).toBeTruthy()
   })
 

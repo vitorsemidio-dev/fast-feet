@@ -1,6 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
 import { HashComparer } from '@/domain/delivery/application/cryptography/hash-comparer'
+import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import { HashGenerator } from '../cryptography/hash-generator'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 import { WrongPasswordError } from './errors/wrong-password.error'
@@ -13,7 +14,9 @@ export type ChangePasswordFromDeliveryDriverUseCaseInput = {
 
 export type ChangePasswordFromDeliveryDriverUseCaseOutput = Either<
   ResourceNotFoundError | WrongPasswordError,
-  void
+  {
+    deliveryDriver: DeliveryDriver
+  }
 >
 
 export class ChangePasswordFromDeliveryDriverUseCase {
@@ -44,6 +47,8 @@ export class ChangePasswordFromDeliveryDriverUseCase {
     deliveryDriver.password = await this.hashGenerator.hash(newPassword)
     await this.deliveryDriversRepository.update(deliveryDriver)
 
-    return right(undefined)
+    return right({
+      deliveryDriver,
+    })
   }
 }
