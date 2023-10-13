@@ -65,9 +65,11 @@ export class Order extends Entity<OrderProps> {
   }
 
   delivery(deliveryBy: UniqueEntityId) {
-    this.props.status = OrderStatus.DELIVERED
-    this.props.deliveryAt = new Date()
-    this.props.deliveryBy = deliveryBy
+    if (deliveryBy.toString() === this.sendedBy?.toString()) {
+      this.props.status = OrderStatus.DELIVERED
+      this.props.deliveryAt = new Date()
+      this.props.deliveryBy = deliveryBy
+    }
   }
 
   toJson() {

@@ -73,21 +73,27 @@ describe('Order', () => {
   })
 
   it('should be able to set status "DELIVERED" when call "delivery"', () => {
-    const { props } = makeSutInput()
+    const { props } = makeSutInput({
+      sendedBy: new UniqueEntityId('delivery-driver-id'),
+    })
     const sut = Order.create(props)
     sut.delivery(new UniqueEntityId('delivery-driver-id'))
     expect(sut.status).toEqual(OrderStatus.DELIVERED)
   })
 
   it('should be able to return order instance', () => {
-    const { props } = makeSutInput()
+    const { props } = makeSutInput({
+      sendedBy: new UniqueEntityId('delivery-driver-id'),
+    })
     const sut = Order.create(props)
     sut.delivery(new UniqueEntityId('delivery-driver-id'))
     expect(sut.deliveryAt).toBeDefined()
     expect(sut.deliveryAt).toBeInstanceOf(Date)
   })
   it('should be able to set "deliveryBy" with delivery driver id', () => {
-    const { props } = makeSutInput()
+    const { props } = makeSutInput({
+      sendedBy: new UniqueEntityId('delivery-driver-id'),
+    })
     const sut = Order.create(props)
     sut.delivery(new UniqueEntityId('delivery-driver-id'))
     expect(sut.deliveryBy).toBeDefined()
