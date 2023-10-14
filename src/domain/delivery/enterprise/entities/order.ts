@@ -32,6 +32,8 @@ export type DeliveryMethodReturnType = Either<
   void
 >
 
+export type ReturnMethodReturnType = Either<InvalidOrderStatusUpdateError, void>
+
 export class Order extends Entity<OrderProps> {
   static create(
     props: Optional<OrderProps, 'postageAt' | 'status'>,
@@ -132,10 +134,19 @@ export class Order extends Entity<OrderProps> {
     return right(undefined)
   }
 
-  return() {
-    if (this.status !== OrderStatus.DELIVERED) return
+  return(): ReturnMethodReturnType {
+    if (this.status !== OrderStatus.DELIVERED) {
+      return left(
+        new InvalidOrderStatusUpdateError(
+          `Order ${this.id.toString()} is not delivered. Cannot be returned. Current status: ${
+            this.status
+          }`,
+        ),
+      )
+    }
     this.props.status = OrderStatus.RETURNED
     this.props.returnedAt = new Date()
+    return right(undefined)
   }
 
   toJson() {
