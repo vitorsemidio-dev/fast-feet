@@ -174,6 +174,7 @@ describe('Order', () => {
     ) => {
       return makeSutInput(
         {
+          status: OrderStatus.DELIVERED,
           ...overrider,
         },
         id,
@@ -192,6 +193,26 @@ describe('Order', () => {
       sut.return()
       expect(sut.returnedAt).toBeDefined()
       expect(sut.returnedAt).toBeInstanceOf(Date)
+    })
+
+    it('should be able to set status "RETURNED" only if current status is "DELIVERED"', () => {
+      const { props } = _makeSutInput({
+        status: OrderStatus.DELIVERED,
+      })
+      const sut = Order.create(props)
+      sut.return()
+      expect(sut.status).toEqual(OrderStatus.RETURNED)
+      expect(sut.returnedAt).toBeDefined()
+    })
+
+    it('should not be able to set status "RETURNED" if current status is "PENDING"', () => {
+      const { props } = _makeSutInput({
+        status: OrderStatus.PENDING,
+      })
+      const sut = Order.create(props)
+      sut.return()
+      expect(sut.status).toEqual(OrderStatus.PENDING)
+      expect(sut.returnedAt).toBeUndefined()
     })
   })
 })

@@ -86,6 +86,7 @@ export class Order extends Entity<OrderProps> {
   }
 
   return() {
+    if (this.status !== OrderStatus.DELIVERED) return
     this.props.status = OrderStatus.RETURNED
     this.props.returnedAt = new Date()
   }
