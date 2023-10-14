@@ -71,6 +71,7 @@ export class Order extends Entity<OrderProps> {
 
   delivery(deliveryBy: UniqueEntityId, photoURL: string) {
     if (this.status !== OrderStatus.SHIPPED) return
+    if (!photoURL) return
     if (deliveryBy.toString() !== this.shippedBy?.toString()) return
     this.props.status = OrderStatus.DELIVERED
     this.props.deliveryAt = new Date()
