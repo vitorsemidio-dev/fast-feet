@@ -48,29 +48,29 @@ describe('Order', () => {
     expect(sut.status).toEqual(OrderStatus.PENDING)
   })
 
-  describe('set status "SENDED"', () => {
-    it('should be able to set status "SENDED" when call "send"', () => {
+  describe('set status "SHIPPED"', () => {
+    it('should be able to set status "SHIPPED" when call "ship"', () => {
       const { props } = makeSutInput()
       const sut = Order.create(props)
-      sut.send(new UniqueEntityId('delivery-driver-id'))
-      expect(sut.status).toEqual(OrderStatus.SENDED)
+      sut.ship(new UniqueEntityId('delivery-driver-id'))
+      expect(sut.status).toEqual(OrderStatus.SHIPPED)
     })
 
-    it('should be able to set "sendedAt" when call "send"', () => {
+    it('should be able to set "shippedAt" when call "ship"', () => {
       const { props } = makeSutInput()
       const sut = Order.create(props)
-      sut.send(new UniqueEntityId('delivery-driver-id'))
-      expect(sut.sendedAt).toBeDefined()
-      expect(sut.sendedAt).toBeInstanceOf(Date)
+      sut.ship(new UniqueEntityId('delivery-driver-id'))
+      expect(sut.shippedAt).toBeDefined()
+      expect(sut.shippedAt).toBeInstanceOf(Date)
     })
 
-    it('should be able to set "sendedBy" with delivery driver id', () => {
+    it('should be able to set "shippedBy" with delivery driver id', () => {
       const { props } = makeSutInput()
       const sut = Order.create(props)
-      sut.send(new UniqueEntityId('delivery-driver-id'))
-      expect(sut.sendedBy).toBeDefined()
-      expect(sut.sendedBy).toBeInstanceOf(UniqueEntityId)
-      expect(sut.sendedBy?.toString()).toEqual('delivery-driver-id')
+      sut.ship(new UniqueEntityId('delivery-driver-id'))
+      expect(sut.shippedBy).toBeDefined()
+      expect(sut.shippedBy).toBeInstanceOf(UniqueEntityId)
+      expect(sut.shippedBy?.toString()).toEqual('delivery-driver-id')
     })
   })
 
@@ -81,8 +81,8 @@ describe('Order', () => {
     ) => {
       return makeSutInput(
         {
-          sendedBy: new UniqueEntityId('delivery-driver-id'),
-          status: OrderStatus.SENDED,
+          shippedBy: new UniqueEntityId('delivery-driver-id'),
+          status: OrderStatus.SHIPPED,
           ...overrider,
         },
         id,
@@ -106,7 +106,7 @@ describe('Order', () => {
       expect(sut.deliveryBy).toBeUndefined()
     })
 
-    it('should be able to set status "DELIVERED" only if current status is "SENDED"', () => {
+    it('should be able to set status "DELIVERED" only if current status is "SHIPPED"', () => {
       const { props } = _makeSutInput()
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
@@ -140,13 +140,13 @@ describe('Order', () => {
       expect(sut.deliveryBy?.toString()).toEqual('delivery-driver-id')
     })
 
-    it('should be able to validate if sendedBy is the same deliveryBy', () => {
+    it('should be able to validate if shippedBy is the same deliveryBy', () => {
       const { props } = _makeSutInput()
       const sut = Order.create(props)
       sut.delivery(new UniqueEntityId('delivery-driver-id'), 'any_url')
       expect(sut.deliveryBy).toBeDefined()
-      expect(sut.sendedBy).toBeDefined()
-      expect(sut.deliveryBy?.toString()).toEqual(sut.sendedBy?.toString())
+      expect(sut.shippedBy).toBeDefined()
+      expect(sut.deliveryBy?.toString()).toEqual(sut.shippedBy?.toString())
     })
   })
 })

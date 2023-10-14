@@ -7,15 +7,15 @@ export interface OrderProps {
   postageAt: Date
   status: OrderStatus
   deliveryAt?: Date
-  sendedAt?: Date
-  sendedBy?: UniqueEntityId
+  shippedAt?: Date
+  shippedBy?: UniqueEntityId
   deliveryBy?: UniqueEntityId
   photoURL?: string
 }
 
 export enum OrderStatus {
   PENDING = 'PENDING',
-  SENDED = 'SENDED',
+  SHIPPED = 'SHIPPED',
   DELIVERED = 'DELIVERED',
 }
 
@@ -47,12 +47,12 @@ export class Order extends Entity<OrderProps> {
     return this.props.status
   }
 
-  get sendedAt() {
-    return this.props.sendedAt
+  get shippedAt() {
+    return this.props.shippedAt
   }
 
-  get sendedBy() {
-    return this.props.sendedBy
+  get shippedBy() {
+    return this.props.shippedBy
   }
 
   get deliveryBy() {
@@ -63,15 +63,15 @@ export class Order extends Entity<OrderProps> {
     return this.props.photoURL
   }
 
-  send(sendedBy: UniqueEntityId) {
-    this.props.status = OrderStatus.SENDED
-    this.props.sendedAt = new Date()
-    this.props.sendedBy = sendedBy
+  ship(shippedBy: UniqueEntityId) {
+    this.props.status = OrderStatus.SHIPPED
+    this.props.shippedAt = new Date()
+    this.props.shippedBy = shippedBy
   }
 
   delivery(deliveryBy: UniqueEntityId, photoURL: string) {
-    if (this.status !== OrderStatus.SENDED) return
-    if (deliveryBy.toString() !== this.sendedBy?.toString()) return
+    if (this.status !== OrderStatus.SHIPPED) return
+    if (deliveryBy.toString() !== this.shippedBy?.toString()) return
     this.props.status = OrderStatus.DELIVERED
     this.props.deliveryAt = new Date()
     this.props.deliveryBy = deliveryBy
