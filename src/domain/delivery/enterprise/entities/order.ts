@@ -1,12 +1,14 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { Address } from './value-objects/address'
 
 export interface OrderProps {
   name: string
   recipientId: UniqueEntityId
   postageAt: Date
   status: OrderStatus
+  address: Address
   deliveryAt?: Date
   shippedAt?: Date
   returnedAt?: Date
@@ -36,6 +38,10 @@ export class Order extends Entity<OrderProps> {
       id,
     )
     return order
+  }
+
+  get address() {
+    return this.props.address
   }
 
   get deliveryAt() {

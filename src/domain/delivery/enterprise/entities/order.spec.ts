@@ -1,14 +1,18 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { makeAddress } from 'test/factories/address.factory'
 import { fakerPtBr } from 'test/utils/faker'
 import { Order, OrderProps, OrderStatus } from './order'
+import { Address } from './value-objects/address'
 
 const makeSutInput = (
   overrider: Partial<OrderProps> = {},
   id?: UniqueEntityId,
 ) => {
+  const address = makeAddress()
   const props = {
     name: fakerPtBr.name.fullName(),
     recipientId: new UniqueEntityId(),
+    address,
     ...overrider,
   }
   return {
@@ -57,6 +61,33 @@ describe('Order', () => {
     const { props } = makeSutInput()
     const sut = Order.create(props)
     expect(sut.status).toEqual(OrderStatus.PENDING)
+  })
+
+  it('should be able to set "address" with address provided', () => {
+    const address = makeAddress({
+      CEP: 'CEP',
+      city: 'city',
+      complement: 'complement',
+      country: 'country',
+      neighborhood: 'neighborhood',
+      number: 'number',
+      state: 'state',
+      street: 'street',
+    })
+    const { props } = makeSutInput({
+      address,
+    })
+    const sut = Order.create(props)
+    expect(sut.address).toBeDefined()
+    expect(sut.address).toBeInstanceOf(Address)
+    expect(sut.address.CEP).toEqual('CEP')
+    expect(sut.address.city).toEqual('city')
+    expect(sut.address.complement).toEqual('complement')
+    expect(sut.address.country).toEqual('country')
+    expect(sut.address.neighborhood).toEqual('neighborhood')
+    expect(sut.address.number).toEqual('number')
+    expect(sut.address.state).toEqual('state')
+    expect(sut.address.street).toEqual('street')
   })
 
   describe('set status "SHIPPED"', () => {
