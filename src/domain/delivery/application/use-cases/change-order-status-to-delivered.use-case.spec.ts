@@ -8,6 +8,7 @@ import {
   ChangeOrderStatusToDeliveredUseCaseInput,
   ChangeOrderStatusToDeliveredUseCaseOutput,
 } from './change-order-status-to-delivered.use-case'
+import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 const makeSut = () => {
@@ -90,6 +91,24 @@ describe('ChangeOrderStatusToDeliveredUseCase', () => {
     const result = await sut.execute(input)
 
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+    expect(result.isLeft()).toBeTruthy()
+  })
+
+  it('should return InvalidOrderStatusUpdateError if current status is "PENDING"', async () => {
+    const { sut, ordersRepository } = makeSut()
+    const order = makeOrder({
+      status: OrderStatus.PENDING,
+      shippedBy: new UniqueEntityId('delivery-driver-id'),
+    })
+    await ordersRepository.create(order)
+    const input = makeSutInput({
+      orderId: order.id.toString(),
+      deliveryDriverId: order.shippedBy?.toString()!,
+    })
+
+    const result = await sut.execute(input)
+
+    expect(result.value).toBeInstanceOf(InvalidOrderStatusUpdateError)
     expect(result.isLeft()).toBeTruthy()
   })
 })

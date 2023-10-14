@@ -98,6 +98,7 @@ export class Order extends Entity<OrderProps> {
     this.props.deliveryAt = new Date()
     this.props.deliveryBy = deliveryBy
     this.props.photoURL = photoURL
+    return true
   }
 
   return() {

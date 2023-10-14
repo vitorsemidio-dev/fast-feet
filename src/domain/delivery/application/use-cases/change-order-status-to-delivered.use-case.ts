@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
 import { Order } from '../../enterprise/entities/order'
+import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 export type ChangeOrderStatusToDeliveredUseCaseInput = {
@@ -30,7 +31,19 @@ export class ChangeOrderStatusToDeliveredUseCase {
       return left(new ResourceNotFoundError(orderId))
     }
 
-    order.delivery(new UniqueEntityId(deliveryDriverId), photoURL)
+    const updateStatus = order.delivery(
+      new UniqueEntityId(deliveryDriverId),
+      photoURL,
+    )
+
+    if (!updateStatus) {
+      return left(
+        new InvalidOrderStatusUpdateError(
+          `Order ${orderId} is not shipped. Cannot be delivered. Current status: ${order.status}`,
+        ),
+      )
+    }
+
     await this.ordersRepository.save(order)
 
     return right({
