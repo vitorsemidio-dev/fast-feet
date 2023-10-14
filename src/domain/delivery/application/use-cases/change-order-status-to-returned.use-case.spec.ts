@@ -6,6 +6,7 @@ import {
   ChangeOrderStatusToReturnedUseCase,
   ChangeOrderStatusToReturnedUseCaseInput,
 } from './change-order-status-to-returned.use-case'
+import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 const makeSut = () => {
@@ -74,6 +75,22 @@ describe('ChangeOrderStatusToReturnedUseCase', () => {
     const result = await sut.execute(input)
 
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+    expect(result.isLeft()).toBeTruthy()
+  })
+
+  it('should return InvalidOrderStatusUpdateError if current status is "PENDING"', async () => {
+    const { sut, ordersRepository } = makeSut()
+    const order = makeOrder({
+      status: OrderStatus.PENDING,
+    })
+    await ordersRepository.create(order)
+    const input = makeSutInput({
+      orderId: order.id.toString(),
+    })
+
+    const result = await sut.execute(input)
+
+    expect(result.value).toBeInstanceOf(InvalidOrderStatusUpdateError)
     expect(result.isLeft()).toBeTruthy()
   })
 })

@@ -1,6 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
 import { Order } from '../../enterprise/entities/order'
+import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 export type ChangeOrderStatusToReturnedUseCaseInput = {
@@ -8,7 +9,7 @@ export type ChangeOrderStatusToReturnedUseCaseInput = {
 }
 
 export type ChangeOrderStatusToReturnedUseCaseOutput = Either<
-  ResourceNotFoundError,
+  ResourceNotFoundError | InvalidOrderStatusUpdateError,
   {
     order: Order
   }
@@ -25,7 +26,12 @@ export class ChangeOrderStatusToReturnedUseCase {
       return left(new ResourceNotFoundError(orderId))
     }
 
-    order.return()
+    const returnOrError = order.return()
+
+    if (returnOrError.isLeft()) {
+      return left(returnOrError.value)
+    }
+
     await this.ordersRepository.save(order)
 
     return right({
