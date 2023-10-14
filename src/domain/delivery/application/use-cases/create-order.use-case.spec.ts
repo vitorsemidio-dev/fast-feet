@@ -1,12 +1,48 @@
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { makeAddress } from 'test/factories/address.factory'
+import { makeRecipient } from 'test/factories/recipient.factory'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient.repository'
-import { CreateOrderUseCase } from './create-order.use-case'
+import { fakerPtBr } from 'test/utils/faker'
+import { Order } from '../../enterprise/entities/order'
+import {
+  CreateOrderUseCase,
+  CreateOrderUseCaseInput,
+  CreateOrderUseCaseOutput,
+} from './create-order.use-case'
 
 const makeSut = () => {
   const recipientsRepository = new InMemoryRecipientsRepository()
   const sut = new CreateOrderUseCase(recipientsRepository)
   return {
     sut,
+    recipientsRepository,
   }
+}
+
+const makeSutInput = (
+  override: Partial<CreateOrderUseCaseInput> = {},
+): CreateOrderUseCaseInput => {
+  const address = makeAddress()
+  return {
+    name: fakerPtBr.commerce.product(),
+    recipientId: new UniqueEntityId().toString(),
+    CEP: address.city,
+    city: address.city,
+    complement: address.complement,
+    country: address.country,
+    neighborhood: address.neighborhood,
+    number: address.number,
+    state: address.state,
+    street: address.street,
+    ...override,
+  }
+}
+
+const getRight = (result: CreateOrderUseCaseOutput) => {
+  if (result.isLeft()) {
+    throw result.value
+  }
+  return result
 }
 
 describe('CreateOrderUseCase', () => {
@@ -17,8 +53,25 @@ describe('CreateOrderUseCase', () => {
 
   it('should not be able to create if not found recipient', async () => {
     const { sut } = makeSut()
-    const recipientId = 'recipient-not-exist'
-    const result = await sut.execute({ recipientId })
+    const input = makeSutInput({
+      recipientId: 'recipient-not-exist',
+    })
+    const result = await sut.execute(input)
     expect(result.isLeft()).toBeTruthy()
+  })
+
+  it('should be able to return instance of Order when create', async () => {
+    const { sut, recipientsRepository } = makeSut()
+    const recipient = makeRecipient()
+    const input = makeSutInput({
+      recipientId: recipient.id.toString(),
+    })
+    recipientsRepository.itens.push(recipient)
+
+    const result = await sut.execute(input)
+    const { value } = getRight(result)
+
+    expect(result.isRight()).toBeTruthy()
+    expect(value.order).toBeInstanceOf(Order)
   })
 })
