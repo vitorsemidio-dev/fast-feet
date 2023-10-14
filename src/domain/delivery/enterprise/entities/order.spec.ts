@@ -127,8 +127,16 @@ describe('Order', () => {
     it('should not be able to set status "DELIVERED" if no provide photo_url', () => {
       const { props } = _makeSutInput()
       const sut = Order.create(props)
-      const fakePhotoURL = fakerPtBr.internet.url()
       sut.delivery(new UniqueEntityId('delivery-driver-id'), null as any)
+      expect(sut.status).toEqual(OrderStatus.SHIPPED)
+      expect(sut.status).not.toEqual(OrderStatus.DELIVERED)
+    })
+
+    it('should not be able to set status "DELIVERED" if no provide deliveryBy', () => {
+      const { props } = _makeSutInput()
+      const sut = Order.create(props)
+      const fakePhotoURL = fakerPtBr.internet.url()
+      sut.delivery(null as any, fakePhotoURL)
       expect(sut.status).toEqual(OrderStatus.SHIPPED)
       expect(sut.status).not.toEqual(OrderStatus.DELIVERED)
     })
