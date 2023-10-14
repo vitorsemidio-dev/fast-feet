@@ -90,6 +90,27 @@ describe('Order', () => {
     expect(sut.address.street).toEqual('street')
   })
 
+  it('should be able to return json when call "toJson"', () => {
+    const { props } = makeSutInput()
+    const sut = Order.create(props)
+    const json = sut.toJson()
+    expect(json).toBeDefined()
+    expect(json).toEqual({
+      id: sut.id.toString(),
+      name: sut.name,
+      recipientId: sut.recipientId.toString(),
+      address: sut.address.toJson(),
+      postageAt: sut.postageAt.toISOString(),
+      status: sut.status,
+      shippedAt: sut.shippedAt,
+      shippedBy: sut.shippedBy?.toString(),
+      deliveryAt: sut.deliveryAt,
+      deliveryBy: sut.deliveryBy?.toString(),
+      photoURL: sut.photoURL,
+      returnedAt: sut.returnedAt,
+    })
+  })
+
   describe('set status "SHIPPED"', () => {
     it('should be able to set status "SHIPPED" when call "ship"', () => {
       const { props } = makeSutInput()

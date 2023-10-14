@@ -40,6 +40,10 @@ export class Order extends Entity<OrderProps> {
     return order
   }
 
+  get name() {
+    return this.props.name
+  }
+
   get address() {
     return this.props.address
   }
@@ -103,6 +107,19 @@ export class Order extends Entity<OrderProps> {
   }
 
   toJson() {
-    return {}
+    return {
+      id: this.id.toString(),
+      name: this.name,
+      address: this.address.toJson(),
+      deliveryAt: this.deliveryAt?.toISOString(),
+      postageAt: this.postageAt.toISOString(),
+      status: this.status,
+      shippedAt: this.shippedAt?.toISOString(),
+      shippedBy: this.shippedBy?.toString(),
+      deliveryBy: this.deliveryBy?.toString(),
+      photoURL: this.photoURL,
+      returnedAt: this.returnedAt?.toISOString(),
+      recipientId: this.recipientId.toString(),
+    }
   }
 }
