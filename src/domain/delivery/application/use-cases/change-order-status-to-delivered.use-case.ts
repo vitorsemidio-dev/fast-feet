@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
 import { Order } from '../../enterprise/entities/order'
+import { InvalidDeliveryUpdateError } from './errors/invalid-delivery-update.error'
 import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
@@ -12,7 +13,7 @@ export type ChangeOrderStatusToDeliveredUseCaseInput = {
 }
 
 export type ChangeOrderStatusToDeliveredUseCaseOutput = Either<
-  ResourceNotFoundError,
+  ResourceNotFoundError | InvalidDeliveryUpdateError,
   {
     order: Order
   }
@@ -29,6 +30,14 @@ export class ChangeOrderStatusToDeliveredUseCase {
 
     if (!order) {
       return left(new ResourceNotFoundError(orderId))
+    }
+
+    if (order.shippedBy?.toString() !== deliveryDriverId) {
+      return left(
+        new InvalidDeliveryUpdateError(
+          `Order ${orderId} is not shipped by ${deliveryDriverId}. Cannot be delivered. Current driver: ${order.shippedBy}`,
+        ),
+      )
     }
 
     const updateStatus = order.delivery(
