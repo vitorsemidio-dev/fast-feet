@@ -1,8 +1,9 @@
-import { Either, Left, left, right } from '@/core/either'
+import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
 import { Order } from '../../enterprise/entities/order'
 import { InvalidDeliveryUpdateError } from './errors/invalid-delivery-update.error'
+import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 export type ChangeOrderStatusToDeliveredUseCaseInput = {
@@ -11,13 +12,10 @@ export type ChangeOrderStatusToDeliveredUseCaseInput = {
   photoURL: string
 }
 
-export type ChangeOrderStatusToDeliveredUseCaseError = Left<
-  ResourceNotFoundError | InvalidDeliveryUpdateError,
-  undefined
->
-
 export type ChangeOrderStatusToDeliveredUseCaseOutput = Either<
-  ResourceNotFoundError | InvalidDeliveryUpdateError,
+  | ResourceNotFoundError
+  | InvalidDeliveryUpdateError
+  | InvalidOrderStatusUpdateError,
   {
     order: Order
   }
@@ -41,8 +39,8 @@ export class ChangeOrderStatusToDeliveredUseCase {
       photoURL,
     )
 
-    if (deliveryOrError?.isLeft()) {
-      return deliveryOrError as ChangeOrderStatusToDeliveredUseCaseError
+    if (deliveryOrError.isLeft()) {
+      return left(deliveryOrError.value)
     }
 
     await this.ordersRepository.save(order)

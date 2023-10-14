@@ -1,4 +1,4 @@
-import { left, right } from '@/core/either'
+import { Either, left, right } from '@/core/either'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
@@ -26,6 +26,11 @@ export enum OrderStatus {
   DELIVERED = 'DELIVERED',
   RETURNED = 'RETURNED',
 }
+
+export type DeliveryMethodReturnType = Either<
+  InvalidOrderStatusUpdateError | InvalidDeliveryUpdateError,
+  void
+>
 
 export class Order extends Entity<OrderProps> {
   static create(
@@ -93,7 +98,10 @@ export class Order extends Entity<OrderProps> {
     this.props.shippedBy = shippedBy
   }
 
-  delivery(deliveryBy: UniqueEntityId, photoURL: string) {
+  delivery(
+    deliveryBy: UniqueEntityId,
+    photoURL: string,
+  ): DeliveryMethodReturnType {
     if (this.status !== OrderStatus.SHIPPED) {
       return left(
         new InvalidOrderStatusUpdateError(
@@ -103,7 +111,13 @@ export class Order extends Entity<OrderProps> {
         ),
       )
     }
-    if (!deliveryBy || !photoURL) return
+    if (!deliveryBy || !photoURL) {
+      return left(
+        new InvalidOrderStatusUpdateError(
+          `Missing params: deliveryBy, photoURL`,
+        ),
+      )
+    }
     if (deliveryBy.toString() !== this.shippedBy?.toString()) {
       return left(
         new InvalidDeliveryUpdateError(
