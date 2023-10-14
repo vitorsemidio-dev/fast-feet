@@ -116,7 +116,7 @@ describe('ChangeOrderStatusToDeliveredUseCase', () => {
   it('should return InvalidDeliveryUpdateError if delivery driver who delivered is not the same who shipped', async () => {
     const { sut, ordersRepository } = makeSut()
     const order = makeOrder({
-      status: OrderStatus.PENDING,
+      status: OrderStatus.SHIPPED,
       shippedBy: new UniqueEntityId('correct-delivery-driver-id'),
     })
     await ordersRepository.create(order)
