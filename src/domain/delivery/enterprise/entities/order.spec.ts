@@ -8,6 +8,7 @@ const makeSutInput = (
 ) => {
   const props = {
     name: fakerPtBr.name.fullName(),
+    recipientId: new UniqueEntityId(),
     ...overrider,
   }
   return {
@@ -21,6 +22,16 @@ describe('Order', () => {
     const { props } = makeSutInput()
     const sut = Order.create(props)
     expect(sut).toBeDefined()
+  })
+
+  it('should be able to create new order with "recipientId" provided', () => {
+    const { props } = makeSutInput({
+      recipientId: new UniqueEntityId('recipient-id'),
+    })
+    const sut = Order.create(props)
+    expect(sut.recipientId).toBeDefined()
+    expect(sut.recipientId).toBeInstanceOf(UniqueEntityId)
+    expect(sut.recipientId.toString()).toEqual('recipient-id')
   })
 
   it('should be able to provide id when create new order', () => {

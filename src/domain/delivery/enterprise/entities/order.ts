@@ -4,6 +4,7 @@ import { Optional } from '@/core/types/optional'
 
 export interface OrderProps {
   name: string
+  recipientId: UniqueEntityId
   postageAt: Date
   status: OrderStatus
   deliveryAt?: Date
@@ -67,6 +68,10 @@ export class Order extends Entity<OrderProps> {
 
   get returnedAt() {
     return this.props.returnedAt
+  }
+
+  get recipientId() {
+    return this.props.recipientId
   }
 
   ship(shippedBy: UniqueEntityId) {
