@@ -6,7 +6,6 @@ import { Order, OrderStatus } from '../../enterprise/entities/order'
 import {
   ChangeOrderStatusToDeliveredUseCase,
   ChangeOrderStatusToDeliveredUseCaseInput,
-  ChangeOrderStatusToDeliveredUseCaseOutput,
 } from './change-order-status-to-delivered.use-case'
 import { InvalidDeliveryUpdateError } from './errors/invalid-delivery-update.error'
 import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
@@ -30,13 +29,6 @@ const makeSutInput = (
     photoURL: fakerPtBr.image.imageUrl(),
     ...overrider,
   }
-}
-
-const getRight = (output: ChangeOrderStatusToDeliveredUseCaseOutput) => {
-  if (output.isLeft()) {
-    throw output.value
-  }
-  return output
 }
 
 describe('ChangeOrderStatusToDeliveredUseCase', () => {
@@ -79,7 +71,7 @@ describe('ChangeOrderStatusToDeliveredUseCase', () => {
     })
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     expect(value.order).toBeInstanceOf(Order)
     expect(value.order?.status).toEqual(OrderStatus.DELIVERED)

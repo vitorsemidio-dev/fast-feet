@@ -13,6 +13,14 @@ export class Left<L, R> {
   isLeft(): this is Left<L, R> {
     return true
   }
+
+  getRight(): R {
+    return undefined as R
+  }
+
+  getLeft(): L {
+    return this.value
+  }
 }
 
 // Success
@@ -29,6 +37,14 @@ export class Right<L, R> {
 
   isLeft(): this is Left<L, R> {
     return false
+  }
+
+  getRight(): R {
+    return this.value
+  }
+
+  getLeft(): L {
+    return undefined as L
   }
 }
 

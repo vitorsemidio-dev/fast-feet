@@ -5,7 +5,6 @@ import { Order, OrderStatus } from '../../enterprise/entities/order'
 import {
   ChangeOrderStatusToShippedUseCase,
   ChangeOrderStatusToShippedUseCaseInput,
-  ChangeOrderStatusToShippedUseCaseOutput,
 } from './change-order-status-to-shipped.use-case'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
@@ -26,13 +25,6 @@ const makeSutInput = (
     deliveryDriverId: new UniqueEntityId().toString(),
     ...overrider,
   }
-}
-
-const getRight = (output: ChangeOrderStatusToShippedUseCaseOutput) => {
-  if (output.isLeft()) {
-    throw output.value
-  }
-  return output
 }
 
 describe('ChangeOrderStatusToShippedUseCase', () => {
@@ -68,7 +60,7 @@ describe('ChangeOrderStatusToShippedUseCase', () => {
     })
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     expect(value.order).toBeInstanceOf(Order)
     expect(value.order?.status).toEqual(OrderStatus.SHIPPED)

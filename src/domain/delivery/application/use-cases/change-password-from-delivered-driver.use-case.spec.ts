@@ -9,7 +9,6 @@ import { HashGenerator } from '../cryptography/hash-generator'
 import {
   ChangePasswordFromDeliveredDriverUseCase,
   ChangePasswordFromDeliveredDriverUseCaseInput,
-  ChangePasswordFromDeliveredDriverUseCaseOutput,
 } from './change-password-from-delivered-driver.use-case'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 import { WrongPasswordError } from './errors/wrong-password.error'
@@ -41,13 +40,6 @@ const makeSutInput = (
     newPassword: fakerPtBr.internet.password(),
     ...overrider,
   }
-}
-
-const getRight = (result: ChangePasswordFromDeliveredDriverUseCaseOutput) => {
-  if (result.isLeft()) {
-    throw result.value
-  }
-  return result
 }
 
 describe('ChangePasswordFromDeliveredDriverUseCase', () => {
@@ -127,7 +119,7 @@ describe('ChangePasswordFromDeliveredDriverUseCase', () => {
     })
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     expect(value.deliveryDriver).toBeInstanceOf(DeliveryDriver)
     expect(output.isRight()).toBeTruthy()

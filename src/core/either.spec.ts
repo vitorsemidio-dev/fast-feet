@@ -21,3 +21,17 @@ test('error result', () => {
   expect(result.isLeft()).toBe(true)
   expect(result.isRight()).toBe(false)
 })
+
+test('success getRight()', () => {
+  const result = doSomeThing(true)
+
+  expect(result.getRight()).toBe(10)
+  expect(result.getLeft()).toBe(undefined)
+})
+
+test('error getLeft()', () => {
+  const result = doSomeThing(false)
+
+  expect(result.getLeft()).toBe('error')
+  expect(result.getRight()).toBe(undefined)
+})
