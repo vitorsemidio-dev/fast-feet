@@ -166,4 +166,24 @@ describe('Order', () => {
       expect(sut.deliveryBy?.toString()).toEqual(sut.shippedBy?.toString())
     })
   })
+
+  describe('set status "RETURNED"', () => {
+    const _makeSutInput = (
+      overrider: Partial<OrderProps> = {},
+      id?: UniqueEntityId,
+    ) => {
+      return makeSutInput(
+        {
+          ...overrider,
+        },
+        id,
+      )
+    }
+    it('should be able to set status "RETURNED" when call "return"', () => {
+      const { props } = _makeSutInput()
+      const sut = Order.create(props)
+      sut.return()
+      expect(sut.status).toEqual(OrderStatus.RETURNED)
+    })
+  })
 })

@@ -17,6 +17,7 @@ export enum OrderStatus {
   PENDING = 'PENDING',
   SHIPPED = 'SHIPPED',
   DELIVERED = 'DELIVERED',
+  RETURNED = 'RETURNED',
 }
 
 export class Order extends Entity<OrderProps> {
@@ -77,6 +78,10 @@ export class Order extends Entity<OrderProps> {
     this.props.deliveryAt = new Date()
     this.props.deliveryBy = deliveryBy
     this.props.photoURL = photoURL
+  }
+
+  return() {
+    this.props.status = OrderStatus.RETURNED
   }
 
   toJson() {
