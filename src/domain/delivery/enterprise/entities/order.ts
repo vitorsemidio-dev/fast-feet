@@ -8,6 +8,7 @@ export interface OrderProps {
   status: OrderStatus
   deliveryAt?: Date
   shippedAt?: Date
+  returnedAt?: Date
   shippedBy?: UniqueEntityId
   deliveryBy?: UniqueEntityId
   photoURL?: string
@@ -64,6 +65,10 @@ export class Order extends Entity<OrderProps> {
     return this.props.photoURL
   }
 
+  get returnedAt() {
+    return this.props.returnedAt
+  }
+
   ship(shippedBy: UniqueEntityId) {
     this.props.status = OrderStatus.SHIPPED
     this.props.shippedAt = new Date()
@@ -82,6 +87,7 @@ export class Order extends Entity<OrderProps> {
 
   return() {
     this.props.status = OrderStatus.RETURNED
+    this.props.returnedAt = new Date()
   }
 
   toJson() {

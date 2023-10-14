@@ -185,5 +185,13 @@ describe('Order', () => {
       sut.return()
       expect(sut.status).toEqual(OrderStatus.RETURNED)
     })
+
+    it('should be able to fill "returnedAt" when call "return"', () => {
+      const { props } = _makeSutInput()
+      const sut = Order.create(props)
+      sut.return()
+      expect(sut.returnedAt).toBeDefined()
+      expect(sut.returnedAt).toBeInstanceOf(Date)
+    })
   })
 })
