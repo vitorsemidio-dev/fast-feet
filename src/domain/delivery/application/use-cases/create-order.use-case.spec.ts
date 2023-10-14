@@ -8,7 +8,6 @@ import { Order } from '../../enterprise/entities/order'
 import {
   CreateOrderUseCase,
   CreateOrderUseCaseInput,
-  CreateOrderUseCaseOutput,
 } from './create-order.use-case'
 
 const makeSut = () => {
@@ -41,13 +40,6 @@ const makeSutInput = (
   }
 }
 
-const getRight = (result: CreateOrderUseCaseOutput) => {
-  if (result.isLeft()) {
-    throw result.value
-  }
-  return result
-}
-
 describe('CreateOrderUseCase', () => {
   it('should be defined', () => {
     const { sut } = makeSut()
@@ -71,10 +63,10 @@ describe('CreateOrderUseCase', () => {
     })
     recipientsRepository.itens.push(recipient)
 
-    const result = await sut.execute(input)
-    const { value } = getRight(result)
+    const output = await sut.execute(input)
+    const value = output.getRight()
 
-    expect(result.isRight()).toBeTruthy()
+    expect(output.isRight()).toBeTruthy()
     expect(value.order).toBeInstanceOf(Order)
   })
 
@@ -87,7 +79,7 @@ describe('CreateOrderUseCase', () => {
     recipientsRepository.itens.push(recipient)
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     const orderOnDB = ordersRepository.itens[0]
 

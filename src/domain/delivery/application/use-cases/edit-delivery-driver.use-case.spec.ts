@@ -5,7 +5,6 @@ import { fakerPtBr } from 'test/utils/faker'
 import {
   EditDeliveryDriverUseCase,
   EditDeliveryDriverUseCaseInput,
-  EditDeliveryDriverUseCaseOutput,
 } from './edit-delivery-driver.use-case'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
@@ -23,13 +22,6 @@ const makeSutInput = (
     name: fakerPtBr.name.fullName(),
     ...overrider,
   }
-}
-
-const getRight = (output: EditDeliveryDriverUseCaseOutput) => {
-  if (output.isLeft()) {
-    throw output.value
-  }
-  return output
 }
 
 describe('EditDeliveryDriverUseCase', () => {
@@ -86,7 +78,7 @@ describe('EditDeliveryDriverUseCase', () => {
     })
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     expect(value.deliveryDriver.toJson()).toEqual(
       expect.objectContaining({

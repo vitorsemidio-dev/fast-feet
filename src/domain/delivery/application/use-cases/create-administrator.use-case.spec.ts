@@ -1,7 +1,6 @@
 import {
   CreateAdministratorUseCase,
   CreateAdministratorUseCaseInput,
-  CreateAdministratorUseCaseOutput,
 } from '@/domain/delivery/application/use-cases/create-administrator.use-case'
 import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
 import { FakeHasher } from 'test/cryptography/faker-hash'
@@ -33,13 +32,6 @@ const makeSutInput = (
   }
 }
 
-const getRight = (output: CreateAdministratorUseCaseOutput) => {
-  if (output.isLeft()) {
-    throw output.value
-  }
-  return output
-}
-
 describe('CreateAdministratorUseCase', () => {
   let sut: CreateAdministratorUseCase
   let administratorRepository: InMemoryAdministratorsRepository
@@ -64,7 +56,7 @@ describe('CreateAdministratorUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     expect(administratorRepository.itens).toHaveLength(1)
     expect(administratorRepository.itens[0].id.toString()).toEqual(
@@ -78,7 +70,7 @@ describe('CreateAdministratorUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     expect(value.administrator).toEqual(
       expect.objectContaining({

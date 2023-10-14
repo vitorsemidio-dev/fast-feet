@@ -4,7 +4,6 @@ import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import {
   CreateDeliveryDriverUseCase,
   CreateDeliveryDriverUseCaseInput,
-  CreateDeliveryDriverUseCaseOutput,
 } from './create-delivery-driver.use-case'
 import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
 
@@ -31,13 +30,6 @@ const makeSutInput = (
     password: '123456',
     ...override,
   }
-}
-
-const getRight = (output: CreateDeliveryDriverUseCaseOutput) => {
-  if (output.isLeft()) {
-    throw output.value
-  }
-  return output
 }
 
 describe('CreateDeliveryDriverUseCase', () => {
@@ -68,7 +60,7 @@ describe('CreateDeliveryDriverUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     expect(deliveryDriverRepository.itens.length).toEqual(1)
     expect(deliveryDriverRepository.itens[0].id.toString()).toEqual(
@@ -80,7 +72,7 @@ describe('CreateDeliveryDriverUseCase', () => {
     const input = makeSutInput()
 
     const output = await sut.execute(input)
-    const { value } = getRight(output)
+    const value = output.getRight()
 
     expect(value.deliveryDriver).toBeInstanceOf(DeliveryDriver)
   })
