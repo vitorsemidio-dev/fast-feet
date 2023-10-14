@@ -1,6 +1,7 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { makeAddress } from 'test/factories/address.factory'
 import { makeRecipient } from 'test/factories/recipient.factory'
+import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient.repository'
 import { fakerPtBr } from 'test/utils/faker'
 import { Order } from '../../enterprise/entities/order'
@@ -12,10 +13,12 @@ import {
 
 const makeSut = () => {
   const recipientsRepository = new InMemoryRecipientsRepository()
-  const sut = new CreateOrderUseCase(recipientsRepository)
+  const ordersRepository = new InMemoryOrdersRepository()
+  const sut = new CreateOrderUseCase(recipientsRepository, ordersRepository)
   return {
     sut,
     recipientsRepository,
+    ordersRepository,
   }
 }
 
@@ -73,5 +76,24 @@ describe('CreateOrderUseCase', () => {
 
     expect(result.isRight()).toBeTruthy()
     expect(value.order).toBeInstanceOf(Order)
+  })
+
+  it('should be able to persiste order on database', async () => {
+    const { sut, recipientsRepository, ordersRepository } = makeSut()
+    const recipient = makeRecipient()
+    const input = makeSutInput({
+      recipientId: recipient.id.toString(),
+    })
+    recipientsRepository.itens.push(recipient)
+
+    const output = await sut.execute(input)
+    const { value } = getRight(output)
+
+    const orderOnDB = ordersRepository.itens[0]
+
+    expect(ordersRepository.itens).toHaveLength(1)
+    expect(orderOnDB.id.toString()).toBe(value.order.id.toString())
+    expect(orderOnDB.recipientId.toString()).toBe(input.recipientId)
+    expect(orderOnDB.name).toBe(input.name)
   })
 })

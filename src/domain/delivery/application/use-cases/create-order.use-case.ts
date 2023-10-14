@@ -1,5 +1,6 @@
 import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { OrdersRepository } from '@/core/repositories/orders.repository'
 import { RecipientsRepository } from '@/core/repositories/recipients.repository'
 import { Order } from '../../enterprise/entities/order'
 import { Address } from '../../enterprise/entities/value-objects/address'
@@ -26,7 +27,10 @@ export type CreateOrderUseCaseOutput = Either<
 >
 
 export class CreateOrderUseCase {
-  constructor(private readonly recipientsRepository: RecipientsRepository) {}
+  constructor(
+    private readonly recipientsRepository: RecipientsRepository,
+    private readonly ordersRepository: OrdersRepository,
+  ) {}
   async execute({
     recipientId,
     name,
@@ -58,6 +62,9 @@ export class CreateOrderUseCase {
       recipientId: new UniqueEntityId(recipientId),
       name,
     })
+
+    await this.ordersRepository.create(order)
+
     return right({
       order,
     })
