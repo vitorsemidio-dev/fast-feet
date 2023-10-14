@@ -1,6 +1,9 @@
+import { Either, left, right } from '@/core/either'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { InvalidDeliveryUpdateError } from '../../application/use-cases/errors/invalid-delivery-update.error'
+import { InvalidOrderStatusUpdateError } from '../../application/use-cases/errors/invalid-order-status-update.error'
 import { Address } from './value-objects/address'
 
 export interface OrderProps {
@@ -23,6 +26,11 @@ export enum OrderStatus {
   DELIVERED = 'DELIVERED',
   RETURNED = 'RETURNED',
 }
+
+export type DeliveryMethodReturnType = Either<
+  InvalidOrderStatusUpdateError | InvalidDeliveryUpdateError,
+  void
+>
 
 export class Order extends Entity<OrderProps> {
   static create(
@@ -90,14 +98,38 @@ export class Order extends Entity<OrderProps> {
     this.props.shippedBy = shippedBy
   }
 
-  delivery(deliveryBy: UniqueEntityId, photoURL: string) {
-    if (this.status !== OrderStatus.SHIPPED) return
-    if (!deliveryBy || !photoURL) return
-    if (deliveryBy.toString() !== this.shippedBy?.toString()) return
+  delivery(
+    deliveryBy: UniqueEntityId,
+    photoURL: string,
+  ): DeliveryMethodReturnType {
+    if (this.status !== OrderStatus.SHIPPED) {
+      return left(
+        new InvalidOrderStatusUpdateError(
+          `Order ${this.id.toString()} is not shipped. Cannot be delivered. Current status: ${
+            this.status
+          }`,
+        ),
+      )
+    }
+    if (!deliveryBy || !photoURL) {
+      return left(
+        new InvalidOrderStatusUpdateError(
+          `Missing params: deliveryBy, photoURL`,
+        ),
+      )
+    }
+    if (deliveryBy.toString() !== this.shippedBy?.toString()) {
+      return left(
+        new InvalidDeliveryUpdateError(
+          `Order ${this.id} is not shipped by ${deliveryBy}. Cannot be delivered. Current driver: ${this.shippedBy}`,
+        ),
+      )
+    }
     this.props.status = OrderStatus.DELIVERED
     this.props.deliveryAt = new Date()
     this.props.deliveryBy = deliveryBy
     this.props.photoURL = photoURL
+    return right(undefined)
   }
 
   return() {

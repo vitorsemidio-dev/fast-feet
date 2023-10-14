@@ -6,20 +6,20 @@ import { HashGenerator } from '../cryptography/hash-generator'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 import { WrongPasswordError } from './errors/wrong-password.error'
 
-export type ChangePasswordFromDeliveryDriverUseCaseInput = {
+export type ChangePasswordFromDeliveredDriverUseCaseInput = {
   deliveryDriverId: string
   oldPassword: string
   newPassword: string
 }
 
-export type ChangePasswordFromDeliveryDriverUseCaseOutput = Either<
+export type ChangePasswordFromDeliveredDriverUseCaseOutput = Either<
   ResourceNotFoundError | WrongPasswordError,
   {
     deliveryDriver: DeliveryDriver
   }
 >
 
-export class ChangePasswordFromDeliveryDriverUseCase {
+export class ChangePasswordFromDeliveredDriverUseCase {
   constructor(
     private readonly deliveryDriversRepository: DeliveryDriversRepository,
     private readonly hashComparer: HashComparer,
@@ -30,7 +30,7 @@ export class ChangePasswordFromDeliveryDriverUseCase {
     deliveryDriverId,
     oldPassword,
     newPassword,
-  }: ChangePasswordFromDeliveryDriverUseCaseInput): Promise<ChangePasswordFromDeliveryDriverUseCaseOutput> {
+  }: ChangePasswordFromDeliveredDriverUseCaseInput): Promise<ChangePasswordFromDeliveredDriverUseCaseOutput> {
     const deliveryDriver =
       await this.deliveryDriversRepository.findById(deliveryDriverId)
     if (!deliveryDriver) {

@@ -7,10 +7,10 @@ import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import { HashComparer } from '../cryptography/hash-comparer'
 import { HashGenerator } from '../cryptography/hash-generator'
 import {
-  ChangePasswordFromDeliveryDriverUseCase,
-  ChangePasswordFromDeliveryDriverUseCaseInput,
-  ChangePasswordFromDeliveryDriverUseCaseOutput,
-} from './change-password-from-delivery-driver.use-case'
+  ChangePasswordFromDeliveredDriverUseCase,
+  ChangePasswordFromDeliveredDriverUseCaseInput,
+  ChangePasswordFromDeliveredDriverUseCaseOutput,
+} from './change-password-from-delivered-driver.use-case'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 import { WrongPasswordError } from './errors/wrong-password.error'
 
@@ -19,7 +19,7 @@ const makeSut = () => {
   const hashComparer = fakeHasher
   const hashGenerator = fakeHasher
   const deliveryDriversRepository = new InMemoryDeliveryDriversRepository()
-  const sut = new ChangePasswordFromDeliveryDriverUseCase(
+  const sut = new ChangePasswordFromDeliveredDriverUseCase(
     deliveryDriversRepository,
     hashComparer,
     hashGenerator,
@@ -33,7 +33,7 @@ const makeSut = () => {
 }
 
 const makeSutInput = (
-  overrider: Partial<ChangePasswordFromDeliveryDriverUseCaseInput> = {},
+  overrider: Partial<ChangePasswordFromDeliveredDriverUseCaseInput> = {},
 ) => {
   return {
     deliveryDriverId: new UniqueEntityId().toString(),
@@ -43,15 +43,15 @@ const makeSutInput = (
   }
 }
 
-const getRight = (result: ChangePasswordFromDeliveryDriverUseCaseOutput) => {
+const getRight = (result: ChangePasswordFromDeliveredDriverUseCaseOutput) => {
   if (result.isLeft()) {
     throw result.value
   }
   return result
 }
 
-describe('ChangePasswordFromDeliveryDriverUseCase', () => {
-  let sut: ChangePasswordFromDeliveryDriverUseCase
+describe('ChangePasswordFromDeliveredDriverUseCase', () => {
+  let sut: ChangePasswordFromDeliveredDriverUseCase
   let deliveryDriversRepository: InMemoryDeliveryDriversRepository
   let hashGenerator: HashGenerator
   let hashComparer: HashComparer
