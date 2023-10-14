@@ -1,6 +1,7 @@
-import { Either, left } from '@/core/either'
+import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
+import { Order } from '../../enterprise/entities/order'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 export type ChangeOrderStatusToShippedUseCaseInput = {
@@ -10,7 +11,9 @@ export type ChangeOrderStatusToShippedUseCaseInput = {
 
 export type ChangeOrderStatusToShippedUseCaseOutput = Either<
   ResourceNotFoundError,
-  void
+  {
+    order: Order
+  }
 >
 
 export class ChangeOrderStatusToShippedUseCase {
@@ -28,6 +31,8 @@ export class ChangeOrderStatusToShippedUseCase {
     order.ship(new UniqueEntityId(deliveryDriverId))
     await this.ordersRepository.save(order)
 
-    return {} as any
+    return right({
+      order,
+    })
   }
 }

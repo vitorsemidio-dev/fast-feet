@@ -1,10 +1,11 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { makeOrder } from 'test/factories/order.factory'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
-import { OrderStatus } from '../../enterprise/entities/order'
+import { Order, OrderStatus } from '../../enterprise/entities/order'
 import {
   ChangeOrderStatusToShippedUseCase,
   ChangeOrderStatusToShippedUseCaseInput,
+  ChangeOrderStatusToShippedUseCaseOutput,
 } from './change-order-status-to-shipped.use-case'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
@@ -25,6 +26,13 @@ const makeSutInput = (
     deliveryDriverId: new UniqueEntityId().toString(),
     ...overrider,
   }
+}
+
+const getRight = (output: ChangeOrderStatusToShippedUseCaseOutput) => {
+  if (output.isLeft()) {
+    throw output.value
+  }
+  return output
 }
 
 describe('ChangeOrderStatusToShippedUseCase', () => {
@@ -49,6 +57,21 @@ describe('ChangeOrderStatusToShippedUseCase', () => {
     expect(orderOnDB?.status).toEqual(OrderStatus.SHIPPED)
     expect(orderOnDB?.shippedAt).toBeDefined()
     expect(orderOnDB?.shippedBy?.toString()).toEqual('ship')
+  })
+
+  it('should return instance of Order updated', async () => {
+    const { sut, ordersRepository } = makeSut()
+    const order = makeOrder()
+    await ordersRepository.create(order)
+    const input = makeSutInput({
+      orderId: order.id.toString(),
+    })
+
+    const output = await sut.execute(input)
+    const { value } = getRight(output)
+
+    expect(value.order).toBeInstanceOf(Order)
+    expect(value.order?.status).toEqual(OrderStatus.SHIPPED)
   })
 
   it('should return ResourceNotFoundError if order does not exists', async () => {
