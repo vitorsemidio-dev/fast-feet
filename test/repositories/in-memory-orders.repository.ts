@@ -7,4 +7,8 @@ export class InMemoryOrdersRepository implements OrdersRepository {
   async create(order: Order): Promise<void> {
     this.itens.push(order)
   }
+
+  async findById(id: string): Promise<Order | null> {
+    return this.itens.find((item) => item.id.toString() === id) || null
+  }
 }
