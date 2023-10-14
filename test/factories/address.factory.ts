@@ -10,10 +10,10 @@ export function makeAddress(override: Partial<AddressProps> = {}): Address {
     city: fakerPtBr.address.city(),
     complement: fakerPtBr.address.street(),
     country: fakerPtBr.address.country(),
-    neighborhood: fakerPtBr.address.streetName(),
+    neighborhood: fakerPtBr.address.street(),
     number: fakerPtBr.address.street(),
     state: fakerPtBr.address.state(),
-    street: fakerPtBr.address.streetName(),
+    street: fakerPtBr.address.street(),
     ...override,
   })
 
