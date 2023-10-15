@@ -7,6 +7,7 @@ import { AppModule } from '@/infra/app.module'
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/services/prisma.service'
+import { CreateOrderBody } from '@/infra/http/controllers/create-order.controller'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
@@ -14,7 +15,6 @@ import { makeAddress } from 'test/factories/address.factory'
 import { RecipientFactory } from 'test/factories/recipient.factory'
 import { TokenFactory } from 'test/factories/token.factory'
 import { fakerPtBr } from 'test/utils/faker'
-import { CreateOrderBody } from './create-order.controller'
 
 const makeRequestBody = (
   override: Partial<CreateOrderBody> = {},

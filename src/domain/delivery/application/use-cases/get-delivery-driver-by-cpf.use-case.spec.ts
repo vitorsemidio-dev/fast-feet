@@ -1,9 +1,9 @@
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { GetDeliveryDrivierByCPFUseCase } from '@/domain/delivery/application/use-cases/get-delivery-driver-by-cpf.use-case'
+import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
+import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
-import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
-import { CPF } from '../../enterprise/entities/value-objects/cpf'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
-import { GetDeliveryDrivierByCPFUseCase } from './get-delivery-driver-by-cpf.use-case'
 
 const makeSut = () => {
   const deliveryDriverRepository = new InMemoryDeliveryDriversRepository()

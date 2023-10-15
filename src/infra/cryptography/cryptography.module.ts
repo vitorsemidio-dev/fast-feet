@@ -2,8 +2,8 @@ import { Encrypter } from '@/domain/delivery/application/cryptography/encrypter'
 import { HashComparer } from '@/domain/delivery/application/cryptography/hash-comparer'
 import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
 import { BCryptHasher } from '@/infra/cryptography/bcrypt-hasher'
+import { JwtEncrypter } from '@/infra/cryptography/jwt-encrypter'
 import { Module } from '@nestjs/common'
-import { JwtEncrypter } from './jwt-encrypter'
 
 @Module({
   providers: [

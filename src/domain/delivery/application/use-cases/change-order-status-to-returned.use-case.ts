@@ -1,8 +1,8 @@
 import { Either, left, right } from '@/core/either'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
-import { Order } from '../../enterprise/entities/order'
-import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
+import { InvalidOrderStatusUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-order-status-update.error'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { Order } from '@/domain/delivery/enterprise/entities/order'
 
 export type ChangeOrderStatusToReturnedUseCaseInput = {
   orderId: string

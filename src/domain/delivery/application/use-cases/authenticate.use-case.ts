@@ -1,9 +1,9 @@
 import { Either, left, right } from '@/core/either'
-import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
+import { AdministratorsRepository } from '@/core/repositories/administrators.repository'
+import { Encrypter } from '@/domain/delivery/application/cryptography/encrypter'
+import { HashComparer } from '@/domain/delivery/application/cryptography/hash-comparer'
+import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error'
 import { Injectable } from '@nestjs/common'
-import { Encrypter } from '../cryptography/encrypter'
-import { HashComparer } from '../cryptography/hash-comparer'
-import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 export type AuthenticateUseCaseInput = {
   cpf: string

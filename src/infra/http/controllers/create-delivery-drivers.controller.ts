@@ -1,11 +1,11 @@
+import { CreateDeliveryDriverUseCase } from '@/domain/delivery/application/use-cases/create-delivery-driver.use-case'
 import { UserRoles as RolesEnum } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { Roles } from '@/infra/auth/roles.decorator'
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import { z } from 'zod'
-import { CreateDeliveryDriverUseCase } from '../../../domain/delivery/application/use-cases/create-delivery-driver.use-case'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 
 const createDeliveryDriverBodySchema = z.object({
   name: z.string(),

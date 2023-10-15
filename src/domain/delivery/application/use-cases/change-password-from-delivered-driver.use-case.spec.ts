@@ -1,17 +1,17 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { HashComparer } from '@/domain/delivery/application/cryptography/hash-comparer'
+import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
+import {
+  ChangePasswordFromDeliveredDriverUseCase,
+  ChangePasswordFromDeliveredDriverUseCaseInput,
+} from '@/domain/delivery/application/use-cases/change-password-from-delivered-driver.use-case'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { WrongPasswordError } from '@/domain/delivery/application/use-cases/errors/wrong-password.error'
+import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
 import { FakeHasher } from 'test/cryptography/faker-hash'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
 import { fakerPtBr } from 'test/utils/faker'
-import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
-import { HashComparer } from '../cryptography/hash-comparer'
-import { HashGenerator } from '../cryptography/hash-generator'
-import {
-  ChangePasswordFromDeliveredDriverUseCase,
-  ChangePasswordFromDeliveredDriverUseCaseInput,
-} from './change-password-from-delivered-driver.use-case'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
-import { WrongPasswordError } from './errors/wrong-password.error'
 
 const makeSut = () => {
   const fakeHasher = new FakeHasher()

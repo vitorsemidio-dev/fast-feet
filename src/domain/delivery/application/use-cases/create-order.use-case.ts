@@ -2,10 +2,10 @@ import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
 import { RecipientsRepository } from '@/core/repositories/recipients.repository'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { Order } from '@/domain/delivery/enterprise/entities/order'
+import { Address } from '@/domain/delivery/enterprise/entities/value-objects/address'
 import { Injectable } from '@nestjs/common'
-import { Order } from '../../enterprise/entities/order'
-import { Address } from '../../enterprise/entities/value-objects/address'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 export type CreateOrderUseCaseInput = {
   recipientId: string

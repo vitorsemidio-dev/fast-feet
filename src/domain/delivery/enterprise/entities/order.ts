@@ -2,9 +2,9 @@ import { Either, left, right } from '@/core/either'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
-import { InvalidDeliveryUpdateError } from '../../application/use-cases/errors/invalid-delivery-update.error'
-import { InvalidOrderStatusUpdateError } from '../../application/use-cases/errors/invalid-order-status-update.error'
-import { Address } from './value-objects/address'
+import { InvalidDeliveryUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-delivery-update.error'
+import { InvalidOrderStatusUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-order-status-update.error'
+import { Address } from '@/domain/delivery/enterprise/entities/value-objects/address'
 
 export interface OrderProps {
   name: string

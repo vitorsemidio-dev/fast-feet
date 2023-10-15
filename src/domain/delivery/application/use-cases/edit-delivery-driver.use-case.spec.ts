@@ -1,12 +1,12 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
-import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
-import { fakerPtBr } from 'test/utils/faker'
 import {
   EditDeliveryDriverUseCase,
   EditDeliveryDriverUseCaseInput,
-} from './edit-delivery-driver.use-case'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
+} from '@/domain/delivery/application/use-cases/edit-delivery-driver.use-case'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
+import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
+import { fakerPtBr } from 'test/utils/faker'
 
 const makeSut = () => {
   const deliveryDriversRepository = new InMemoryDeliveryDriversRepository()

@@ -1,9 +1,9 @@
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
 import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
+import { PrismaDeliveryDriverMapper } from '@/infra/database/mappers/prisma-delivery-driver.mapper'
+import { PrismaService } from '@/infra/database/services/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { PrismaDeliveryDriverMapper } from '../mappers/prisma-delivery-driver.mapper'
-import { PrismaService } from '../services/prisma.service'
 
 @Injectable()
 export class PrismaDeliveryDriversRepository

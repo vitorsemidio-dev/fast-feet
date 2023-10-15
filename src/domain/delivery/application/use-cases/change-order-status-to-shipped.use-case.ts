@@ -1,9 +1,9 @@
 import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { Order } from '@/domain/delivery/enterprise/entities/order'
 import { Injectable } from '@nestjs/common'
-import { Order } from '../../enterprise/entities/order'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 export type ChangeOrderStatusToShippedUseCaseInput = {
   orderId: string

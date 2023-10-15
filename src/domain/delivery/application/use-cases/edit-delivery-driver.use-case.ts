@@ -1,7 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
-import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
 
 export type EditDeliveryDriverUseCaseInput = {
   deliveryDriverId: string

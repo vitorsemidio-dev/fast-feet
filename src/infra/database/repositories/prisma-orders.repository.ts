@@ -1,8 +1,8 @@
 import { OrdersRepository } from '@/core/repositories/orders.repository'
 import { Order } from '@/domain/delivery/enterprise/entities/order'
+import { PrismaOrderMapper } from '@/infra/database/mappers/prisma-order.mapper'
+import { PrismaService } from '@/infra/database/services/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { PrismaOrderMapper } from '../mappers/prisma-order.mapper'
-import { PrismaService } from '../services/prisma.service'
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {

@@ -3,8 +3,8 @@ import { Order, OrderProps } from '@/domain/delivery/enterprise/entities/order'
 import { PrismaOrderMapper } from '@/infra/database/mappers/prisma-order.mapper'
 import { PrismaService } from '@/infra/database/services/prisma.service'
 import { Injectable } from '@nestjs/common'
+import { makeAddress } from 'test/factories/address.factory'
 import { fakerPtBr } from 'test/utils/faker'
-import { makeAddress } from './address.factory'
 
 export function makeOrder(
   override: Partial<OrderProps> = {},

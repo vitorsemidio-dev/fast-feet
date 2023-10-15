@@ -2,10 +2,10 @@ import {
   CreateAdministratorUseCase,
   CreateAdministratorUseCaseInput,
 } from '@/domain/delivery/application/use-cases/create-administrator.use-case'
+import { CPFAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/cpf-already-exists.error'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { FakeHasher } from 'test/cryptography/faker-hash'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
-import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
 
 const makeSut = () => {
   const administratorRepository = new InMemoryAdministratorsRepository()

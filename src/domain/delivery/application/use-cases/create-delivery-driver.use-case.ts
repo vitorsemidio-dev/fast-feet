@@ -1,10 +1,10 @@
 import { Either, left, right } from '@/core/either'
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
 import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
+import { CPFAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/cpf-already-exists.error'
 import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
+import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { Injectable } from '@nestjs/common'
-import { CPF } from '../../enterprise/entities/value-objects/cpf'
-import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
 
 export type CreateDeliveryDriverUseCaseInput = {
   cpf: string

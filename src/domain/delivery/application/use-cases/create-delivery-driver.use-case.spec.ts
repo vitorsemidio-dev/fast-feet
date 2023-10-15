@@ -1,11 +1,11 @@
-import { FakeHasher } from 'test/cryptography/faker-hash'
-import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
-import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
 import {
   CreateDeliveryDriverUseCase,
   CreateDeliveryDriverUseCaseInput,
-} from './create-delivery-driver.use-case'
-import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
+} from '@/domain/delivery/application/use-cases/create-delivery-driver.use-case'
+import { CPFAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/cpf-already-exists.error'
+import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
+import { FakeHasher } from 'test/cryptography/faker-hash'
+import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
 
 const makeSut = () => {
   const deliveryDriverRepository = new InMemoryDeliveryDriversRepository()

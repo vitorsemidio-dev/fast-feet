@@ -1,12 +1,12 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { makeOrder } from 'test/factories/order.factory'
-import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
-import { Order, OrderStatus } from '../../enterprise/entities/order'
 import {
   ChangeOrderStatusToShippedUseCase,
   ChangeOrderStatusToShippedUseCaseInput,
-} from './change-order-status-to-shipped.use-case'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
+} from '@/domain/delivery/application/use-cases/change-order-status-to-shipped.use-case'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { Order, OrderStatus } from '@/domain/delivery/enterprise/entities/order'
+import { makeOrder } from 'test/factories/order.factory'
+import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
 
 const makeSut = () => {
   const ordersRepository = new InMemoryOrdersRepository()

@@ -1,8 +1,12 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import {
+  Order,
+  OrderProps,
+  OrderStatus,
+} from '@/domain/delivery/enterprise/entities/order'
+import { Address } from '@/domain/delivery/enterprise/entities/value-objects/address'
 import { makeAddress } from 'test/factories/address.factory'
 import { fakerPtBr } from 'test/utils/faker'
-import { Order, OrderProps, OrderStatus } from './order'
-import { Address } from './value-objects/address'
 
 const makeSutInput = (
   overrider: Partial<OrderProps> = {},
