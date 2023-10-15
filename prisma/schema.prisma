@@ -19,8 +19,8 @@ model User {
   name      String
   password  String
   role      Role     @default(RECIPIENT)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -36,7 +36,7 @@ model Order {
   id   String @id @default(uuid())
   name String
 
-  postageAt DateTime
+  postageAt DateTime    @default(now()) @map("postage_at")
   status    OrderStatus @default(PENDING)
 
   @@map("orders")
