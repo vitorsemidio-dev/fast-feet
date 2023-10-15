@@ -1,6 +1,8 @@
+import { Roles as RolesEnum } from '@/domain/delivery/enterprise/entities/roles.enum'
 import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
-import { Public } from '@/infra/auth/public'
-import { Body, Controller, HttpCode, Post } from '@nestjs/common'
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
+import { Roles } from '@/infra/auth/roles.decorator'
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import { z } from 'zod'
 import { CreateDeliveryDriverUseCase } from '../../../domain/delivery/application/use-cases/create-delivery-driver.use-case'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
@@ -18,7 +20,7 @@ export type CreateDeliveryDriverBody = z.infer<
 >
 
 @Controller('delivery-drivers')
-@Public()
+@UseGuards(JwtAuthGuard)
 export class CreateDeliveryDriversController {
   constructor(
     private readonly createDeliveryDriverUseCase: CreateDeliveryDriverUseCase,
@@ -26,6 +28,7 @@ export class CreateDeliveryDriversController {
 
   @Post()
   @HttpCode(201)
+  @Roles(RolesEnum.ADMINISTRATOR)
   async handle(
     @Body(new ZodValidationPipe(createDeliveryDriverBodySchema))
     body: CreateDeliveryDriverBody,

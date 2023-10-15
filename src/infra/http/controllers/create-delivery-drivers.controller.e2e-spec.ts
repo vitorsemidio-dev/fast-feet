@@ -1,3 +1,5 @@
+import { Encrypter } from '@/domain/delivery/application/cryptography/encrypter'
+import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
 import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
 import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { AppModule } from '@/infra/app.module'
@@ -5,10 +7,13 @@ import { PrismaService } from '@/infra/database/services/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
+import { makeAdministrator } from 'test/factories/administrator.factory'
 
 describe('CreateDeliveryDriversController (E2E)', () => {
+  // Depedencies
   let app: INestApplication
   let prisma: PrismaService
+  let jwtEncrypter: Encrypter
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -17,29 +22,54 @@ describe('CreateDeliveryDriversController (E2E)', () => {
 
     app = moduleRef.createNestApplication()
     prisma = moduleRef.get(PrismaService)
+    jwtEncrypter = moduleRef.get(Encrypter)
 
     await app.init()
   })
 
-  describe('[POST] /delivery-drivers', () => {
-    const input = {
-      name: 'Delivery Driver',
-      password: '123456',
-      cpf: CPF.makeRandom().value,
-    }
-    let response: request.Response
+  // Shared variables
+  let administrator: Administrator
+  let token: string
 
-    beforeAll(async () => {
-      response = await request(app.getHttpServer())
-        .post('/delivery-drivers')
-        .send(input)
+  beforeEach(async () => {
+    administrator = makeAdministrator()
+    token = await jwtEncrypter.encrypt({
+      sub: administrator.id.toString(),
+      role: Roles.ADMINISTRATOR,
+    })
+  })
+
+  describe('[POST] /delivery-drivers', () => {
+    let input
+
+    beforeEach(async () => {
+      administrator = makeAdministrator()
+      token = await jwtEncrypter.encrypt({
+        sub: administrator.id.toString(),
+        role: Roles.ADMINISTRATOR,
+      })
+      input = {
+        name: 'Delivery Driver',
+        password: '123456',
+        cpf: CPF.makeRandom().value,
+      }
     })
 
     it('should return status code 201 when create', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/delivery-drivers')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
       expect(response.statusCode).toBe(201)
     })
 
     it('should persiste data on database', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/delivery-drivers')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
       const userOnDatabase = await prisma.user.findUnique({
         where: {
           cpf: input.cpf,
@@ -52,25 +82,54 @@ describe('CreateDeliveryDriversController (E2E)', () => {
       expect(userOnDatabase?.role).toEqual(Roles.DELIVERY_DRIVER)
       expect(userOnDatabase?.password).not.toEqual(input.password)
     })
-  })
 
-  describe('[POST] /delivery-drivers', () => {
-    const input = {
-      name: 'Delivery Driver',
-      password: '123456',
-      cpf: CPF.makeRandom().value,
-    }
-    let response: request.Response
-
-    beforeAll(async () => {
-      await request(app.getHttpServer()).post('/delivery-drivers').send(input)
-      response = await request(app.getHttpServer())
+    it('should return status code 409 when cpf already exists', async () => {
+      await request(app.getHttpServer())
         .post('/delivery-drivers')
+        .set('Authorization', `Bearer ${token}`)
         .send(input)
+
+      const response = await request(app.getHttpServer())
+        .post('/delivery-drivers')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
+      expect(response.statusCode).toBe(409)
     })
 
-    it('should return status codoe 409 when cpf already exists', async () => {
-      expect(response.statusCode).toBe(409)
+    it('should return status code 401 when user is not authenticated', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/delivery-drivers')
+        .send(input)
+
+      expect(response.statusCode).toBe(401)
+    })
+
+    it('should return status code 403 when authenticate user is RECIPIENT', async () => {
+      token = await jwtEncrypter.encrypt({
+        sub: administrator.id.toString(),
+        role: Roles.RECIPIENT,
+      })
+
+      const response = await request(app.getHttpServer())
+        .post('/delivery-drivers')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
+      expect(response.statusCode).toBe(403)
+    })
+
+    it('should return status code 403 when authenticate user is DELIVERY_DRIVER', async () => {
+      token = await jwtEncrypter.encrypt({
+        sub: administrator.id.toString(),
+        role: Roles.DELIVERY_DRIVER,
+      })
+      const response = await request(app.getHttpServer())
+        .post('/delivery-drivers')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
+      expect(response.statusCode).toBe(403)
     })
   })
 })
