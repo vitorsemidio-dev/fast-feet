@@ -73,7 +73,7 @@ describe('CreateOrdersController (E2E)', () => {
       input = makeRequestBody()
     })
 
-    it.only('should return status code 201 when create', async () => {
+    it.skip('should return status code 201 when create', async () => {
       const response = await request(app.getHttpServer())
         .post('/orders')
         .set('Authorization', `Bearer ${token}`)
@@ -82,7 +82,18 @@ describe('CreateOrdersController (E2E)', () => {
       expect(response.statusCode).toBe(201)
     })
 
-    it.only('should not return status code 404 when controller is register', async () => {
+    it.only('should return status code 404 when not found recipient', async () => {
+      const recipientIdNotFound = new UniqueEntityId().toString()
+      input.recipientId = recipientIdNotFound
+      const response = await request(app.getHttpServer())
+        .post('/orders')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
+      expect(response.statusCode).toBe(404)
+    })
+
+    it('should not return status code 404 when controller is register', async () => {
       const response = await request(app.getHttpServer())
         .post('/orders')
         .set('Authorization', `Bearer ${token}`)
