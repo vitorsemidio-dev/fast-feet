@@ -24,3 +24,20 @@ model User {
 
   @@map("users")
 }
+
+enum OrderStatus {
+  PENDING
+  SHIPPED
+  DELIVERED
+  RETURNED
+}
+
+model Order {
+  id   String @id @default(uuid())
+  name String
+
+  postageAt DateTime
+  status    OrderStatus @default(PENDING)
+
+  @@map("orders")
+}
