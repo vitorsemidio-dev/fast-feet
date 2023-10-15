@@ -60,6 +60,7 @@ export class PrismaOrderMapper {
       state: data.address.state,
       street: data.address.street,
       complement: data.address.complement,
+      shipperId: data.shippedBy?.toString(),
     }
   }
 
