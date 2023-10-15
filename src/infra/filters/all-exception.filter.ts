@@ -28,15 +28,14 @@ export class ExceptionResponseDto extends BaseResponseDto {
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
+  static logInConsole = true
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
     let message: string
     let status: number
-    let logInConsole = true
 
-    console.log('exception.constructor =>>>>>>>', exception.constructor)
     switch (exception.constructor) {
       case WrongCredentialsError:
         status = HttpStatus.UNAUTHORIZED
@@ -76,12 +75,13 @@ export class AllExceptionFilter implements ExceptionFilter {
         break
     }
 
-    if (logInConsole)
+    if (AllExceptionFilter.logInConsole) {
       Logger.error(
         message,
         (exception as any).stack,
         `${request.method} ${request.url}`,
       )
+    }
 
     response
       .status(status)
