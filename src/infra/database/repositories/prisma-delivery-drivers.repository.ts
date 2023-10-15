@@ -1,6 +1,6 @@
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
 import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
-import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { Injectable } from '@nestjs/common'
 import { PrismaDeliveryDriverMapper } from '../mappers/prisma-delivery-driver.mapper'
 import { PrismaService } from '../services/prisma.service'
@@ -31,7 +31,7 @@ export class PrismaDeliveryDriversRepository
     const result = await this.prismaService.user.findUnique({
       where: {
         cpf,
-        role: Roles.DELIVERY_DRIVER,
+        role: UserRoles.DELIVERY_DRIVER,
       },
     })
 
@@ -46,7 +46,7 @@ export class PrismaDeliveryDriversRepository
     const result = await this.prismaService.user.findUnique({
       where: {
         id,
-        role: Roles.DELIVERY_DRIVER,
+        role: UserRoles.DELIVERY_DRIVER,
       },
     })
 
@@ -60,7 +60,7 @@ export class PrismaDeliveryDriversRepository
   async findMany(): Promise<DeliveryDriver[]> {
     const result = await this.prismaService.user.findMany({
       where: {
-        role: Roles.DELIVERY_DRIVER,
+        role: UserRoles.DELIVERY_DRIVER,
       },
     })
 
@@ -73,7 +73,7 @@ export class PrismaDeliveryDriversRepository
     await this.prismaService.user.update({
       where: {
         id: deliveryDriver.id.toString(),
-        role: Roles.DELIVERY_DRIVER,
+        role: UserRoles.DELIVERY_DRIVER,
       },
       data,
     })

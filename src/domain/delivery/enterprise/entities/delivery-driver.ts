@@ -1,14 +1,14 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
-import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { CPF } from './value-objects/cpf'
 
 export interface DeliveryDriverProps {
   cpf: CPF
   name: string
   password: string
-  role: Roles.DELIVERY_DRIVER
+  role: UserRoles.DELIVERY_DRIVER
 }
 
 export class DeliveryDriver extends Entity<DeliveryDriverProps> {
@@ -19,7 +19,7 @@ export class DeliveryDriver extends Entity<DeliveryDriverProps> {
     return new DeliveryDriver(
       {
         ...props,
-        role: Roles.DELIVERY_DRIVER,
+        role: UserRoles.DELIVERY_DRIVER,
       },
       id,
     )

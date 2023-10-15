@@ -3,7 +3,7 @@ import {
   DeliveryDriver,
   DeliveryDriverProps,
 } from '@/domain/delivery/enterprise/entities/delivery-driver'
-import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { Role } from '@prisma/client'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 
@@ -67,6 +67,6 @@ describe('DeliveryDriver', () => {
   it('should automatically assign the "DELIVERY_DRIVER" role when creating a new delivery driver user', () => {
     const { props } = makeSutInput()
     const deliveryDriver = DeliveryDriver.create(props)
-    expect(deliveryDriver.role).toEqual(Roles.DELIVERY_DRIVER)
+    expect(deliveryDriver.role).toEqual(UserRoles.DELIVERY_DRIVER)
   })
 })

@@ -1,4 +1,4 @@
-export enum Roles {
+export enum UserRoles {
   ADMINISTRATOR = 'ADMINISTRATOR',
   DELIVERY_DRIVER = 'DELIVERY_DRIVER',
   RECIPIENT = 'RECIPIENT',

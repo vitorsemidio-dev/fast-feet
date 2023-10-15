@@ -1,4 +1,4 @@
-import { Roles as RolesEnum } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles as RolesEnum } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { Roles } from '@/infra/auth/roles.decorator'

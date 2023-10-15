@@ -1,14 +1,14 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
-import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { CPF } from './value-objects/cpf'
 
 export interface RecipientProps {
   cpf: CPF
   name: string
   password: string
-  role: Roles.RECIPIENT
+  role: UserRoles.RECIPIENT
 }
 
 export class Recipient extends Entity<RecipientProps> {
@@ -16,7 +16,7 @@ export class Recipient extends Entity<RecipientProps> {
     return new Recipient(
       {
         ...props,
-        role: Roles.RECIPIENT,
+        role: UserRoles.RECIPIENT,
       },
       id,
     )

@@ -3,7 +3,7 @@ import {
   Recipient,
   RecipientProps,
 } from '@/domain/delivery/enterprise/entities/recipient'
-import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { Role } from '@prisma/client'
 import { makeRecipient } from 'test/factories/recipient.factory'
 
@@ -64,6 +64,6 @@ describe('Recipient', () => {
   it('should automatically assign the "RECIPIENT" role when creating a new delivery driver user', () => {
     const { props } = makeSutInput()
     const recipient = Recipient.create(props)
-    expect(recipient.role).toEqual(Roles.RECIPIENT)
+    expect(recipient.role).toEqual(UserRoles.RECIPIENT)
   })
 })
