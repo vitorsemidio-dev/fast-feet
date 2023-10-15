@@ -3,6 +3,7 @@ import { config } from 'dotenv'
 config({ path: '.env', override: true })
 config({ path: '.env.test', override: true })
 
+import { AllExceptionFilter } from '@/infra/filters/all-exception.filter'
 import { PrismaClient } from '@prisma/client'
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
@@ -27,6 +28,7 @@ beforeAll(async () => {
   const databaseURL = generateUniqueDatabaseURL(schemaId)
 
   process.env.DATABASE_URL = databaseURL
+  AllExceptionFilter.logInConsole = false
 
   execSync('npx prisma migrate deploy')
 })

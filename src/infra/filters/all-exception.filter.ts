@@ -1,4 +1,5 @@
 import { CPFAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/cpf-already-exists.error'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error'
 import {
   ArgumentsHost,
@@ -27,13 +28,13 @@ export class ExceptionResponseDto extends BaseResponseDto {
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
+  static logInConsole = true
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
     let message: string
     let status: number
-    let logInConsole = true
 
     switch (exception.constructor) {
       case WrongCredentialsError:
@@ -43,6 +44,10 @@ export class AllExceptionFilter implements ExceptionFilter {
       case CPFAlreadyExistsError:
         status = HttpStatus.CONFLICT
         message = (exception as CPFAlreadyExistsError).message
+        break
+      case ResourceNotFoundError:
+        status = HttpStatus.NOT_FOUND
+        message = (exception as ResourceNotFoundError).message
         break
       case HttpException:
         status = (exception as HttpException).getStatus()
@@ -70,12 +75,13 @@ export class AllExceptionFilter implements ExceptionFilter {
         break
     }
 
-    if (logInConsole)
+    if (AllExceptionFilter.logInConsole) {
       Logger.error(
         message,
         (exception as any).stack,
         `${request.method} ${request.url}`,
       )
+    }
 
     response
       .status(status)

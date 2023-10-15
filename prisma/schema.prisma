@@ -19,8 +19,44 @@ model User {
   name      String
   password  String
   role      Role     @default(RECIPIENT)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  orders Order[] @relation("recipient")
+
+  shipments Order[] @relation("shipper")
 
   @@map("users")
+}
+
+enum OrderStatus {
+  PENDING
+  SHIPPED
+  DELIVERED
+  RETURNED
+}
+
+model Order {
+  id   String @id @default(uuid())
+  name String
+
+  postageAt DateTime    @map("postage_at")
+  status    OrderStatus @default(PENDING)
+
+  recipientId String @map("recipient_id")
+  recipient   User   @relation("recipient", fields: [recipientId], references: [id])
+
+  shipperId String? @map("shipper_id")
+  shipper   User?   @relation("shipper", fields: [shipperId], references: [id])
+
+  street       String  @map("street")
+  number       String  @map("number")
+  complement   String? @map("complement")
+  neighborhood String  @map("neighborhood")
+  city         String  @map("city")
+  state        String  @map("state")
+  CEP          String  @map("cep")
+  country      String  @map("country")
+
+  @@map("orders")
 }
