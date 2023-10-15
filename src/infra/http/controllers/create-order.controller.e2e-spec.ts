@@ -124,6 +124,7 @@ describe('CreateOrdersController (E2E)', () => {
       expect(orderOnDB?.status).toEqual(OrderStatus.PENDING)
       expect(orderOnDB?.postageAt).toBeDefined()
       expect(orderOnDB?.id).toBeDefined()
+      expect(orderOnDB?.recipientId).toBeDefined()
     })
 
     it('should return status code 401 when user is not authenticated', async () => {

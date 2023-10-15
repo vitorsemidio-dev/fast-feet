@@ -14,7 +14,7 @@ export class PrismaOrderMapper {
         postageAt: raw.postageAt,
         status: PrismaOrderMapper.toDomainOrderStatus(raw.status),
         address: null as any,
-        recipientId: null as any,
+        recipientId: new UniqueEntityId(raw.recipientId),
       },
       new UniqueEntityId(raw.id),
     )
@@ -41,6 +41,7 @@ export class PrismaOrderMapper {
       postageAt: data.postageAt,
       id: data.id.toString(),
       status: PrismaOrderMapper.toPersistenceOrderStatus(data.status),
+      recipientId: data.recipientId.toString(),
     }
   }
 
