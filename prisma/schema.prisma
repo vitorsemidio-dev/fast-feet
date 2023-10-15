@@ -22,6 +22,10 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  orders Order[] @relation("recipient")
+
+  shipments Order[] @relation("shipper")
+
   @@map("users")
 }
 
@@ -38,6 +42,12 @@ model Order {
 
   postageAt DateTime    @map("postage_at")
   status    OrderStatus @default(PENDING)
+
+  recipientId String @map("recipient_id")
+  recipient   User   @relation("recipient", fields: [recipientId], references: [id])
+
+  shipperId String? @map("shipper_id")
+  shipper   User?   @relation("shipper", fields: [shipperId], references: [id])
 
   @@map("orders")
 }
