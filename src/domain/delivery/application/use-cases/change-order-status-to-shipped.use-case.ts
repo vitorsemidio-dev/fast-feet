@@ -1,6 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
+import { Injectable } from '@nestjs/common'
 import { Order } from '../../enterprise/entities/order'
 import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
@@ -16,6 +17,7 @@ export type ChangeOrderStatusToShippedUseCaseOutput = Either<
   }
 >
 
+@Injectable()
 export class ChangeOrderStatusToShippedUseCase {
   constructor(private readonly ordersRepository: OrdersRepository) {}
   async execute({
