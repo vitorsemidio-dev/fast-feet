@@ -49,6 +49,17 @@ describe('CreateOrdersController (E2E)', () => {
     jwtEncrypter = moduleRef.get(Encrypter)
 
     await app.init()
+
+    recipient = makeRecipient()
+    await prisma.user.create({
+      data: {
+        id: recipient.id.toString(),
+        name: recipient.name,
+        cpf: recipient.cpf.value,
+        password: recipient.password,
+        role: recipient.role,
+      },
+    })
   })
 
   // Shared variables
@@ -58,7 +69,6 @@ describe('CreateOrdersController (E2E)', () => {
 
   beforeEach(async () => {
     administrator = makeAdministrator()
-    recipient = makeRecipient()
     token = await jwtEncrypter.encrypt({
       sub: administrator.id.toString(),
       role: UserRoles.ADMINISTRATOR,
@@ -70,24 +80,15 @@ describe('CreateOrdersController (E2E)', () => {
 
     beforeEach(async () => {
       administrator = makeAdministrator()
-      await prisma.user.create({
-        data: {
-          id: recipient.id.toString(),
-          name: recipient.name,
-          cpf: recipient.cpf.value,
-          password: recipient.password,
-          role: recipient.role,
-        },
-      })
       token = await jwtEncrypter.encrypt({
         sub: administrator.id.toString(),
         role: UserRoles.ADMINISTRATOR,
       })
       input = makeRequestBody()
+      input.recipientId = recipient.id.toString()
     })
 
-    it.only('should return status code 201 when create', async () => {
-      input.recipientId = recipient.id.toString()
+    it('should return status code 201 when create', async () => {
       const response = await request(app.getHttpServer())
         .post('/orders')
         .set('Authorization', `Bearer ${token}`)
@@ -133,20 +134,6 @@ describe('CreateOrdersController (E2E)', () => {
       // expect(userOnDatabase?.cpf).toEqual(input.cpf)
       // expect(userOnDatabase?.role).toEqual(UserRoles.DELIVERY_DRIVER)
       // expect(userOnDatabase?.password).not.toEqual(input.password)
-    })
-
-    it('should return status code 409 when cpf already exists', async () => {
-      await request(app.getHttpServer())
-        .post('/orders')
-        .set('Authorization', `Bearer ${token}`)
-        .send(input)
-
-      const response = await request(app.getHttpServer())
-        .post('/orders')
-        .set('Authorization', `Bearer ${token}`)
-        .send(input)
-
-      expect(response.statusCode).toBe(409)
     })
 
     it('should return status code 401 when user is not authenticated', async () => {
