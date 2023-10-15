@@ -81,6 +81,7 @@ describe('ChangeOrderStatusToShippedController (E2E)', () => {
 
       expect(orderOnDB?.status).toBe(OrderStatus.SHIPPED)
       expect(orderOnDB?.shipperId).toBe(deliveryDriver.id.toString())
+      expect(orderOnDB?.shippedAt).toBeDefined()
     })
 
     it('should return 403 if user is not DELIVERY_DRIVER', async () => {
