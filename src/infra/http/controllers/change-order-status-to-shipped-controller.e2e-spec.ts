@@ -1,5 +1,5 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { Order } from '@/domain/delivery/enterprise/entities/order'
+import { Order, OrderStatus } from '@/domain/delivery/enterprise/entities/order'
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { AppModule } from '@/infra/app.module'
@@ -68,6 +68,25 @@ describe('CreateOrdersController (E2E)', () => {
 
     beforeEach(async () => {
       input = makeRequestBody()
+    })
+
+    it('should be able to update status to SHIPPED on database', async () => {
+      token = await tokenFactory.make({
+        role: UserRoles.DELIVERY_DRIVER,
+      })
+
+      const response = await request(app.getHttpServer())
+        .patch(`${controller}`.replace(':orderId', order.id.toString()))
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
+      const orderOnDB = await prisma.order.findUnique({
+        where: {
+          id: order.id.toString(),
+        },
+      })
+
+      expect(orderOnDB?.status).toBe(OrderStatus.SHIPPED)
     })
 
     it('should return 403 if user is not DELIVERY_DRIVER', async () => {
