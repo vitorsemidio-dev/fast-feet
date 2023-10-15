@@ -15,10 +15,7 @@ import {
   AdministratorFactory,
   makeAdministrator,
 } from 'test/factories/administrator.factory'
-import {
-  RecipientFactory,
-  makeRecipient,
-} from 'test/factories/recipient.factory'
+import { RecipientFactory } from 'test/factories/recipient.factory'
 import { fakerPtBr } from 'test/utils/faker'
 import { CreateOrderBody } from './create-order.controller'
 
@@ -72,16 +69,7 @@ describe('CreateOrdersController (E2E)', () => {
     let input: CreateOrderBody
 
     beforeAll(async () => {
-      recipient = makeRecipient()
-      await prisma.user.create({
-        data: {
-          id: recipient.id.toString(),
-          name: recipient.name,
-          cpf: recipient.cpf.value,
-          password: recipient.password,
-          role: recipient.role,
-        },
-      })
+      recipient = await recipientFactory.make()
 
       administrator = makeAdministrator()
       token = await jwtEncrypter.encrypt({
