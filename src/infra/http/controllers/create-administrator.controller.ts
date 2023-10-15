@@ -1,5 +1,5 @@
 import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
-import { Public } from '@/infra/auth/public'
+import { Public } from '@/infra/auth/public.decorator'
 import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 import { z } from 'zod'
 import { CreateAdministratorUseCase } from '../../../domain/delivery/application/use-cases/create-administrator.use-case'
