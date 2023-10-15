@@ -1,6 +1,7 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Encrypter } from '@/domain/delivery/application/cryptography/encrypter'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
+import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { AppModule } from '@/infra/app.module'
 import { PrismaService } from '@/infra/database/services/prisma.service'
@@ -9,6 +10,7 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { makeAddress } from 'test/factories/address.factory'
 import { makeAdministrator } from 'test/factories/administrator.factory'
+import { makeRecipient } from 'test/factories/recipient.factory'
 import { fakerPtBr } from 'test/utils/faker'
 import { CreateOrderBody } from './create-order.controller'
 
@@ -51,10 +53,12 @@ describe('CreateOrdersController (E2E)', () => {
 
   // Shared variables
   let administrator: Administrator
+  let recipient: Recipient
   let token: string
 
   beforeEach(async () => {
     administrator = makeAdministrator()
+    recipient = makeRecipient()
     token = await jwtEncrypter.encrypt({
       sub: administrator.id.toString(),
       role: UserRoles.ADMINISTRATOR,
@@ -66,6 +70,15 @@ describe('CreateOrdersController (E2E)', () => {
 
     beforeEach(async () => {
       administrator = makeAdministrator()
+      await prisma.user.create({
+        data: {
+          id: recipient.id.toString(),
+          name: recipient.name,
+          cpf: recipient.cpf.value,
+          password: recipient.password,
+          role: recipient.role,
+        },
+      })
       token = await jwtEncrypter.encrypt({
         sub: administrator.id.toString(),
         role: UserRoles.ADMINISTRATOR,
@@ -73,7 +86,8 @@ describe('CreateOrdersController (E2E)', () => {
       input = makeRequestBody()
     })
 
-    it.skip('should return status code 201 when create', async () => {
+    it.only('should return status code 201 when create', async () => {
+      input.recipientId = recipient.id.toString()
       const response = await request(app.getHttpServer())
         .post('/orders')
         .set('Authorization', `Bearer ${token}`)
@@ -82,7 +96,7 @@ describe('CreateOrdersController (E2E)', () => {
       expect(response.statusCode).toBe(201)
     })
 
-    it.only('should return status code 404 when not found recipient', async () => {
+    it('should return status code 404 when not found recipient', async () => {
       const recipientIdNotFound = new UniqueEntityId().toString()
       input.recipientId = recipientIdNotFound
       const response = await request(app.getHttpServer())
