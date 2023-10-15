@@ -49,5 +49,14 @@ model Order {
   shipperId String? @map("shipper_id")
   shipper   User?   @relation("shipper", fields: [shipperId], references: [id])
 
+  street       String  @map("street")
+  number       String  @map("number")
+  complement   String? @map("complement")
+  neighborhood String  @map("neighborhood")
+  city         String  @map("city")
+  state        String  @map("state")
+  CEP          String  @map("cep")
+  country      String  @map("country")
+
   @@map("orders")
 }
