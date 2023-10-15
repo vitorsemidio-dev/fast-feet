@@ -54,7 +54,10 @@ describe('CPF', () => {
     const resultValids = cpfs.map((cpf) => {
       return CPF.validate(cpf)
     })
-    const valids = resultValids.filter((valid) => valid === true)
+    const valids = resultValids.filter((valid, i) => {
+      if (!valid) console.log(`CPF ${cpfs[i]} is invalid`)
+      return valid
+    })
     expect(valids.length).toEqual(resultValids.length)
   })
 
