@@ -1,6 +1,7 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Encrypter } from '@/domain/delivery/application/cryptography/encrypter'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
+import { OrderStatus } from '@/domain/delivery/enterprise/entities/order'
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { AppModule } from '@/infra/app.module'
@@ -118,22 +119,23 @@ describe('CreateOrdersController (E2E)', () => {
     })
 
     it('should persiste data on database', async () => {
+      input.name = new UniqueEntityId().toString()
       const response = await request(app.getHttpServer())
         .post('/orders')
         .set('Authorization', `Bearer ${token}`)
         .send(input)
 
-      // const userOnDatabase = await prisma.user.findUnique({
-      //   where: {
-      //     cpf: input.cpf,
-      //   },
-      // })
+      const orderOnDB = await prisma.order.findFirst({
+        where: {
+          name: input.name,
+        },
+      })
 
-      // expect(userOnDatabase).toBeTruthy()
-      // expect(userOnDatabase?.name).toEqual(input.name)
-      // expect(userOnDatabase?.cpf).toEqual(input.cpf)
-      // expect(userOnDatabase?.role).toEqual(UserRoles.DELIVERY_DRIVER)
-      // expect(userOnDatabase?.password).not.toEqual(input.password)
+      expect(orderOnDB).toBeTruthy()
+      expect(orderOnDB?.name).toEqual(input.name)
+      expect(orderOnDB?.status).toEqual(OrderStatus.PENDING)
+      expect(orderOnDB?.postageAt).toBeDefined()
+      expect(orderOnDB?.id).toBeDefined()
     })
 
     it('should return status code 401 when user is not authenticated', async () => {
