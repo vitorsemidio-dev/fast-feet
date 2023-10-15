@@ -1,7 +1,7 @@
 export interface AddressProps {
   street: string
   number: string
-  complement?: string
+  complement?: string | null
   neighborhood: string
   city: string
   state: string
@@ -12,7 +12,7 @@ export interface AddressProps {
 export class Address {
   private _street: string
   private _number: string
-  private _complement?: string
+  private _complement?: string | null
   private _neighborhood: string
   private _city: string
   private _state: string

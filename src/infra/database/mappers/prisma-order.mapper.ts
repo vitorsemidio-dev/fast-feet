@@ -1,5 +1,6 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Order, OrderStatus } from '@/domain/delivery/enterprise/entities/order'
+import { Address } from '@/domain/delivery/enterprise/entities/value-objects/address'
 import {
   Prisma,
   Order as PrismaOrder,
@@ -13,7 +14,16 @@ export class PrismaOrderMapper {
         name: raw.name,
         postageAt: raw.postageAt,
         status: PrismaOrderMapper.toDomainOrderStatus(raw.status),
-        address: null as any,
+        address: Address.create({
+          CEP: raw.CEP,
+          city: raw.city,
+          complement: raw.complement,
+          country: raw.country,
+          neighborhood: raw.neighborhood,
+          number: raw.number,
+          state: raw.state,
+          street: raw.street,
+        }),
         recipientId: new UniqueEntityId(raw.recipientId),
       },
       new UniqueEntityId(raw.id),
@@ -42,6 +52,14 @@ export class PrismaOrderMapper {
       id: data.id.toString(),
       status: PrismaOrderMapper.toPersistenceOrderStatus(data.status),
       recipientId: data.recipientId.toString(),
+      CEP: data.address.CEP,
+      city: data.address.city,
+      country: data.address.country,
+      neighborhood: data.address.neighborhood,
+      number: data.address.number,
+      state: data.address.state,
+      street: data.address.street,
+      complement: data.address.complement,
     }
   }
 

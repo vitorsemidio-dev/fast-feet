@@ -30,7 +30,7 @@ const makeRequestBody = (
     number: address.number,
     state: address.state,
     street: address.street,
-    complement: address.complement,
+    complement: address.complement!,
     ...override,
   }
 }
@@ -108,6 +108,7 @@ describe('CreateOrdersController (E2E)', () => {
 
     it('should persiste data on database', async () => {
       input.name = new UniqueEntityId().toString()
+      input.city = 'My City Test'
       const response = await request(app.getHttpServer())
         .post('/orders')
         .set('Authorization', `Bearer ${token}`)
@@ -124,7 +125,8 @@ describe('CreateOrdersController (E2E)', () => {
       expect(orderOnDB?.status).toEqual(OrderStatus.PENDING)
       expect(orderOnDB?.postageAt).toBeDefined()
       expect(orderOnDB?.id).toBeDefined()
-      expect(orderOnDB?.recipientId).toBeDefined()
+      expect(orderOnDB?.recipientId).toEqual(input.recipientId)
+      expect(orderOnDB?.city).toEqual('My City Test')
     })
 
     it('should return status code 401 when user is not authenticated', async () => {
