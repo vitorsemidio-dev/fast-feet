@@ -1,8 +1,8 @@
 import { AdministratorsRepository } from '@/core/repositories/administrators.repository'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
+import { PrismaAdministratorMapper } from '@/infra/database/mappers/prisma-adminisitrator.mapper'
+import { PrismaService } from '@/infra/database/services/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { PrismaAdministratorMapper } from '../mappers/prisma-adminisitrator.mapper'
-import { PrismaService } from '../services/prisma.service'
 
 @Injectable()
 export class PrismaAdministratorsRepository

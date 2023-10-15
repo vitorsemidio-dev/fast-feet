@@ -1,10 +1,10 @@
+import { ChangeOrderStatusToShippedUseCase } from '@/domain/delivery/application/use-cases/change-order-status-to-shipped.use-case'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { Roles } from '@/infra/auth/roles.decorator'
 import { Controller, HttpCode, Param, Patch, UseGuards } from '@nestjs/common'
-import { ChangeOrderStatusToShippedUseCase } from '../../../domain/delivery/application/use-cases/change-order-status-to-shipped.use-case'
 
 @Controller('orders/:orderId/ship')
 @UseGuards(JwtAuthGuard)

@@ -1,5 +1,8 @@
+import {
+  Address,
+  AddressProps,
+} from '@/domain/delivery/enterprise/entities/value-objects/address'
 import { makeAddress } from 'test/factories/address.factory'
-import { Address, AddressProps } from './address'
 
 const makeSutInput = (overrider: Partial<AddressProps> = {}) => {
   const address = makeAddress()

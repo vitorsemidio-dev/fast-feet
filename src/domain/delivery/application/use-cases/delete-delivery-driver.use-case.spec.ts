@@ -1,9 +1,9 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { DeleteDeliveryDriverUseCase } from '@/domain/delivery/application/use-cases/delete-delivery-driver.use-case'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
-import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
-import { DeleteDeliveryDriverUseCase } from './delete-delivery-driver.use-case'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 const makeSut = () => {
   const deliveryDriversRepository = new InMemoryDeliveryDriversRepository()

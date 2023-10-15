@@ -1,10 +1,10 @@
 import { Either, left, right } from '@/core/either'
 import { AdministratorsRepository } from '@/core/repositories/administrators.repository'
 import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
+import { CPFAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/cpf-already-exists.error'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
+import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { Injectable } from '@nestjs/common'
-import { CPF } from '../../enterprise/entities/value-objects/cpf'
-import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
 
 export type CreateAdministratorUseCaseInput = {
   cpf: string

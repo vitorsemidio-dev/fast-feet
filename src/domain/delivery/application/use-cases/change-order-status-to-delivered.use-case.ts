@@ -1,10 +1,10 @@
 import { Either, left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
-import { Order } from '../../enterprise/entities/order'
-import { InvalidDeliveryUpdateError } from './errors/invalid-delivery-update.error'
-import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
+import { InvalidDeliveryUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-delivery-update.error'
+import { InvalidOrderStatusUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-order-status-update.error'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { Order } from '@/domain/delivery/enterprise/entities/order'
 
 export type ChangeOrderStatusToDeliveredUseCaseInput = {
   orderId: string

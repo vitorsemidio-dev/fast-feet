@@ -1,6 +1,6 @@
+import { FetchDeliveryDriverUseCase } from '@/domain/delivery/application/use-cases/fetch-delivery-driver.use-case'
 import { makeDeliveryDriver } from 'test/factories/delivery-driver.factory'
 import { InMemoryDeliveryDriversRepository } from 'test/repositories/in-memory-delivery-drivers.repository'
-import { FetchDeliveryDriverUseCase } from './fetch-delivery-driver.use-case'
 
 const makeSut = () => {
   const deliveryDriverRepository = new InMemoryDeliveryDriversRepository()

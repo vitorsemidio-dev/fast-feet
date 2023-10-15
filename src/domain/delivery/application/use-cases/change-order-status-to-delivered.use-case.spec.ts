@@ -1,15 +1,15 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { makeOrder } from 'test/factories/order.factory'
-import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
-import { fakerPtBr } from 'test/utils/faker'
-import { Order, OrderStatus } from '../../enterprise/entities/order'
 import {
   ChangeOrderStatusToDeliveredUseCase,
   ChangeOrderStatusToDeliveredUseCaseInput,
-} from './change-order-status-to-delivered.use-case'
-import { InvalidDeliveryUpdateError } from './errors/invalid-delivery-update.error'
-import { InvalidOrderStatusUpdateError } from './errors/invalid-order-status-update.error'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
+} from '@/domain/delivery/application/use-cases/change-order-status-to-delivered.use-case'
+import { InvalidDeliveryUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-delivery-update.error'
+import { InvalidOrderStatusUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-order-status-update.error'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { Order, OrderStatus } from '@/domain/delivery/enterprise/entities/order'
+import { makeOrder } from 'test/factories/order.factory'
+import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
+import { fakerPtBr } from 'test/utils/faker'
 
 const makeSut = () => {
   const ordersRepository = new InMemoryOrdersRepository()

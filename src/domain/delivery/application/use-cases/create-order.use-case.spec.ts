@@ -1,14 +1,14 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import {
+  CreateOrderUseCase,
+  CreateOrderUseCaseInput,
+} from '@/domain/delivery/application/use-cases/create-order.use-case'
+import { Order } from '@/domain/delivery/enterprise/entities/order'
 import { makeAddress } from 'test/factories/address.factory'
 import { makeRecipient } from 'test/factories/recipient.factory'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders.repository'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient.repository'
 import { fakerPtBr } from 'test/utils/faker'
-import { Order } from '../../enterprise/entities/order'
-import {
-  CreateOrderUseCase,
-  CreateOrderUseCaseInput,
-} from './create-order.use-case'
 
 const makeSut = () => {
   const recipientsRepository = new InMemoryRecipientsRepository()
@@ -30,7 +30,7 @@ const makeSutInput = (
     recipientId: new UniqueEntityId().toString(),
     CEP: address.city,
     city: address.city,
-    complement: address.complement,
+    complement: address.complement!,
     country: address.country,
     neighborhood: address.neighborhood,
     number: address.number,

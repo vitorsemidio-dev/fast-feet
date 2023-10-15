@@ -1,4 +1,7 @@
-import { CPF, InvalidCPFError } from './cpf'
+import {
+  CPF,
+  InvalidCPFError,
+} from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 
 describe('CPF', () => {
   it('should be able to create new CPF providing value with mask', () => {

@@ -1,8 +1,8 @@
 import { Either, left, right } from '@/core/either'
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
 import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
 import { Injectable } from '@nestjs/common'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
 
 export type GetDeliveryDrivierByCPFUseCaseInput = {
   cpf: string

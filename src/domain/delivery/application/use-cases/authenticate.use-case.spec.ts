@@ -2,12 +2,12 @@ import {
   AuthenticateUseCase,
   AuthenticateUseCaseInput,
 } from '@/domain/delivery/application/use-cases/authenticate.use-case'
+import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error'
+import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import { FakeHasher } from 'test/cryptography/faker-hash'
 import { makeAdministrator } from 'test/factories/administrator.factory'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
-import { Administrator } from '../../enterprise/entities/administrator'
-import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 const makeSut = () => {
   const administratorRepository = new InMemoryAdministratorsRepository()

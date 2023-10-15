@@ -1,8 +1,8 @@
 import { RecipientsRepository } from '@/core/repositories/recipients.repository'
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
+import { PrismaService } from '@/infra/database/services/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../services/prisma.service'
 
 @Injectable()
 export class PrismaRecipientsRepository implements RecipientsRepository {

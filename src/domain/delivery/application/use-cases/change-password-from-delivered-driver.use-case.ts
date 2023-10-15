@@ -1,10 +1,10 @@
 import { Either, left, right } from '@/core/either'
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
 import { HashComparer } from '@/domain/delivery/application/cryptography/hash-comparer'
-import { DeliveryDriver } from '../../enterprise/entities/delivery-driver'
-import { HashGenerator } from '../cryptography/hash-generator'
-import { ResourceNotFoundError } from './errors/resource-not-found.error'
-import { WrongPasswordError } from './errors/wrong-password.error'
+import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
+import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
+import { WrongPasswordError } from '@/domain/delivery/application/use-cases/errors/wrong-password.error'
+import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
 
 export type ChangePasswordFromDeliveredDriverUseCaseInput = {
   deliveryDriverId: string

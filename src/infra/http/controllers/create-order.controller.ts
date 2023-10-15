@@ -1,10 +1,10 @@
+import { CreateOrderUseCase } from '@/domain/delivery/application/use-cases/create-order.use-case'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { Roles } from '@/infra/auth/roles.decorator'
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import { z } from 'zod'
-import { CreateOrderUseCase } from '../../../domain/delivery/application/use-cases/create-order.use-case'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 
 const createOrderBodySchema = z.object({
   recipientId: z.string(),
