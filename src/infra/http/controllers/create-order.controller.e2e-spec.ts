@@ -50,41 +50,35 @@ describe('CreateOrdersController (E2E)', () => {
     jwtEncrypter = moduleRef.get(Encrypter)
 
     await app.init()
-
-    recipient = makeRecipient()
-    await prisma.user.create({
-      data: {
-        id: recipient.id.toString(),
-        name: recipient.name,
-        cpf: recipient.cpf.value,
-        password: recipient.password,
-        role: recipient.role,
-      },
-    })
-  })
-
-  // Shared variables
-  let administrator: Administrator
-  let recipient: Recipient
-  let token: string
-
-  beforeEach(async () => {
-    administrator = makeAdministrator()
-    token = await jwtEncrypter.encrypt({
-      sub: administrator.id.toString(),
-      role: UserRoles.ADMINISTRATOR,
-    })
   })
 
   describe('[POST] /orders', () => {
+    // Shared variables
+    let administrator: Administrator
+    let recipient: Recipient
+    let token: string
     let input: CreateOrderBody
 
-    beforeEach(async () => {
+    beforeAll(async () => {
+      recipient = makeRecipient()
+      await prisma.user.create({
+        data: {
+          id: recipient.id.toString(),
+          name: recipient.name,
+          cpf: recipient.cpf.value,
+          password: recipient.password,
+          role: recipient.role,
+        },
+      })
+
       administrator = makeAdministrator()
       token = await jwtEncrypter.encrypt({
         sub: administrator.id.toString(),
         role: UserRoles.ADMINISTRATOR,
       })
+    })
+
+    beforeEach(async () => {
       input = makeRequestBody()
       input.recipientId = recipient.id.toString()
     })
