@@ -25,6 +25,10 @@ export class PrismaOrderMapper {
           street: raw.street,
         }),
         recipientId: new UniqueEntityId(raw.recipientId),
+        shippedBy: raw.shipperId
+          ? new UniqueEntityId(raw.shipperId)
+          : undefined,
+        shippedAt: raw.shippedAt ? new Date(raw.shippedAt) : undefined,
       },
       new UniqueEntityId(raw.id),
     )

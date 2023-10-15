@@ -5,6 +5,7 @@ import { InvalidDeliveryUpdateError } from '@/domain/delivery/application/use-ca
 import { InvalidOrderStatusUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-order-status-update.error'
 import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
 import { Order } from '@/domain/delivery/enterprise/entities/order'
+import { Injectable } from '@nestjs/common'
 
 export type ChangeOrderStatusToDeliveredUseCaseInput = {
   orderId: string
@@ -21,6 +22,7 @@ export type ChangeOrderStatusToDeliveredUseCaseOutput = Either<
   }
 >
 
+@Injectable()
 export class ChangeOrderStatusToDeliveredUseCase {
   constructor(private readonly ordersRepository: OrdersRepository) {}
   async execute({
