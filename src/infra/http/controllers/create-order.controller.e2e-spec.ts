@@ -1,6 +1,5 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Encrypter } from '@/domain/delivery/application/cryptography/encrypter'
-import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
 import { OrderStatus } from '@/domain/delivery/enterprise/entities/order'
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
@@ -12,10 +11,6 @@ import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { makeAddress } from 'test/factories/address.factory'
-import {
-  AdministratorFactory,
-  makeAdministrator,
-} from 'test/factories/administrator.factory'
 import { RecipientFactory } from 'test/factories/recipient.factory'
 import { TokenFactory } from 'test/factories/token.factory'
 import { fakerPtBr } from 'test/utils/faker'
@@ -45,20 +40,18 @@ describe('CreateOrdersController (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwtEncrypter: Encrypter
-  let administratorFactory: AdministratorFactory
   let recipientFactory: RecipientFactory
   let tokenFactory: TokenFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule, CryptographyModule],
-      providers: [AdministratorFactory, RecipientFactory, TokenFactory],
+      providers: [RecipientFactory, TokenFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
     prisma = moduleRef.get(PrismaService)
     jwtEncrypter = moduleRef.get(Encrypter)
-    administratorFactory = moduleRef.get(AdministratorFactory)
     recipientFactory = moduleRef.get(RecipientFactory)
     tokenFactory = moduleRef.get(TokenFactory)
 
@@ -67,7 +60,6 @@ describe('CreateOrdersController (E2E)', () => {
 
   describe('[POST] /orders', () => {
     // Shared variables
-    let administrator: Administrator
     let recipient: Recipient
     let token: string
     let input: CreateOrderBody
@@ -75,8 +67,9 @@ describe('CreateOrdersController (E2E)', () => {
     beforeAll(async () => {
       recipient = await recipientFactory.make()
 
-      administrator = makeAdministrator()
-      token = await tokenFactory.make()
+      token = await tokenFactory.make({
+        role: UserRoles.ADMINISTRATOR,
+      })
     })
 
     beforeEach(async () => {
