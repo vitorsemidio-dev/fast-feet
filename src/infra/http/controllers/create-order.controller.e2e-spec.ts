@@ -76,10 +76,7 @@ describe('CreateOrdersController (E2E)', () => {
       recipient = await recipientFactory.make()
 
       administrator = makeAdministrator()
-      token = await jwtEncrypter.encrypt({
-        sub: administrator.id.toString(),
-        role: UserRoles.ADMINISTRATOR,
-      })
+      token = await tokenFactory.make()
     })
 
     beforeEach(async () => {
@@ -145,8 +142,7 @@ describe('CreateOrdersController (E2E)', () => {
     })
 
     it('should return status code 403 when authenticate user is RECIPIENT', async () => {
-      token = await jwtEncrypter.encrypt({
-        sub: administrator.id.toString(),
+      token = await tokenFactory.make({
         role: UserRoles.RECIPIENT,
       })
 
@@ -159,10 +155,10 @@ describe('CreateOrdersController (E2E)', () => {
     })
 
     it('should return status code 403 when authenticate user is DELIVERY_DRIVER', async () => {
-      token = await jwtEncrypter.encrypt({
-        sub: administrator.id.toString(),
+      token = await tokenFactory.make({
         role: UserRoles.DELIVERY_DRIVER,
       })
+
       const response = await request(app.getHttpServer())
         .post('/orders')
         .set('Authorization', `Bearer ${token}`)
