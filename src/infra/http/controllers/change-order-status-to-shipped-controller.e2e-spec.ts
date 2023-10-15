@@ -1,4 +1,3 @@
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
 import { Order, OrderStatus } from '@/domain/delivery/enterprise/entities/order'
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
@@ -15,16 +14,7 @@ import { OrderFactory } from 'test/factories/order.factory'
 import { RecipientFactory } from 'test/factories/recipient.factory'
 import { TokenFactory } from 'test/factories/token.factory'
 
-const makeRequestBody = (
-  override: Partial<{ deliveryDriverId: string }> = {},
-): { deliveryDriverId: string } => {
-  return {
-    deliveryDriverId: new UniqueEntityId().toString(),
-    ...override,
-  }
-}
-
-describe('CreateOrdersController (E2E)', () => {
+describe('ChangeOrderStatusToShippedController (E2E)', () => {
   // Depedencies
   let app: INestApplication
   let prisma: PrismaService
@@ -32,6 +22,7 @@ describe('CreateOrdersController (E2E)', () => {
   let recipientFactory: RecipientFactory
   let orderFactory: OrderFactory
   let tokenFactory: TokenFactory
+  const controller = `/orders/:orderId/ship`
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -55,12 +46,10 @@ describe('CreateOrdersController (E2E)', () => {
     await app.init()
   })
 
-  describe('[POST] /orders', () => {
+  describe(`[PATCH] ${controller}`, () => {
     // Shared variables
-    const controller = `/orders/:orderId/ship`
     let recipient: Recipient
     let token: string
-    let input: { deliveryDriverId: string }
     let order: Order
     let deliveryDriver: DeliveryDriver
 
@@ -75,26 +64,14 @@ describe('CreateOrdersController (E2E)', () => {
 
       token = await tokenFactory.make({
         sub: deliveryDriver.id.toString(),
-        role: UserRoles.DELIVERY_DRIVER,
+        role: deliveryDriver.role,
       })
-    })
-
-    beforeEach(async () => {
-      input = makeRequestBody()
     })
 
     it('should be able to update status to SHIPPED on database', async () => {
-      token = await tokenFactory.make({
-        role: UserRoles.DELIVERY_DRIVER,
-      })
-      const body = {
-        deliveryDriverId: deliveryDriver.id.toString(),
-      }
-
       const response = await request(app.getHttpServer())
         .patch(`${controller}`.replace(':orderId', order.id.toString()))
         .set('Authorization', `Bearer ${token}`)
-        .send(body)
 
       const orderOnDB = await prisma.order.findUnique({
         where: {
@@ -103,7 +80,7 @@ describe('CreateOrdersController (E2E)', () => {
       })
 
       expect(orderOnDB?.status).toBe(OrderStatus.SHIPPED)
-      expect(orderOnDB?.shipperId).toBe(body.deliveryDriverId)
+      expect(orderOnDB?.shipperId).toBe(deliveryDriver.id.toString())
     })
 
     it('should return 403 if user is not DELIVERY_DRIVER', async () => {
@@ -114,20 +91,14 @@ describe('CreateOrdersController (E2E)', () => {
       const response = await request(app.getHttpServer())
         .patch(`${controller}`.replace(':orderId', order.id.toString()))
         .set('Authorization', `Bearer ${token}`)
-        .send(input)
 
       expect(response.statusCode).toBe(403)
     })
 
     it('should not return status code 404 when controller is register', async () => {
-      token = await tokenFactory.make({
-        role: UserRoles.DELIVERY_DRIVER,
-      })
-
       const response = await request(app.getHttpServer())
         .patch(`${controller}`.replace(':orderId', order.id.toString()))
         .set('Authorization', `Bearer ${token}`)
-        .send(input)
 
       expect(response.statusCode).not.toBe(404)
     })

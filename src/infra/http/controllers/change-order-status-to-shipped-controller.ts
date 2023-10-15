@@ -1,25 +1,10 @@
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
+import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { Roles } from '@/infra/auth/roles.decorator'
-import {
-  Body,
-  Controller,
-  HttpCode,
-  Param,
-  Patch,
-  UseGuards,
-} from '@nestjs/common'
-import { z } from 'zod'
+import { Controller, HttpCode, Param, Patch, UseGuards } from '@nestjs/common'
 import { ChangeOrderStatusToShippedUseCase } from '../../../domain/delivery/application/use-cases/change-order-status-to-shipped.use-case'
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
-
-const changeOrderStatusToShippedBodySchema = z.object({
-  deliveryDriverId: z.string().uuid(),
-})
-
-export type ChangeOrderStatusToShippedBody = z.infer<
-  typeof changeOrderStatusToShippedBodySchema
->
 
 @Controller('orders/:orderId/ship')
 @UseGuards(JwtAuthGuard)
@@ -32,15 +17,12 @@ export class ChangeOrderStatusToShippedController {
   @HttpCode(204)
   @Roles(UserRoles.DELIVERY_DRIVER)
   async handle(
-    @Body(new ZodValidationPipe(changeOrderStatusToShippedBodySchema))
-    body: ChangeOrderStatusToShippedBody,
+    @CurrentUser() currentUser: UserPayload,
     @Param('orderId') orderId: string,
   ) {
-    const { deliveryDriverId } = body
-
     const resultOrError = await this.changeOrderStatusToShippedUseCase.execute({
       orderId,
-      deliveryDriverId,
+      deliveryDriverId: currentUser.sub,
     })
 
     if (resultOrError.isLeft()) {
