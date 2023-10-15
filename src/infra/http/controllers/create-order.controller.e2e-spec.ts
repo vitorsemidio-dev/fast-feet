@@ -5,6 +5,7 @@ import { OrderStatus } from '@/domain/delivery/enterprise/entities/order'
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { AppModule } from '@/infra/app.module'
+import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/services/prisma.service'
 import { INestApplication } from '@nestjs/common'
@@ -16,6 +17,7 @@ import {
   makeAdministrator,
 } from 'test/factories/administrator.factory'
 import { RecipientFactory } from 'test/factories/recipient.factory'
+import { TokenFactory } from 'test/factories/token.factory'
 import { fakerPtBr } from 'test/utils/faker'
 import { CreateOrderBody } from './create-order.controller'
 
@@ -45,11 +47,12 @@ describe('CreateOrdersController (E2E)', () => {
   let jwtEncrypter: Encrypter
   let administratorFactory: AdministratorFactory
   let recipientFactory: RecipientFactory
+  let tokenFactory: TokenFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
-      providers: [AdministratorFactory, RecipientFactory],
+      imports: [AppModule, DatabaseModule, CryptographyModule],
+      providers: [AdministratorFactory, RecipientFactory, TokenFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -57,6 +60,7 @@ describe('CreateOrdersController (E2E)', () => {
     jwtEncrypter = moduleRef.get(Encrypter)
     administratorFactory = moduleRef.get(AdministratorFactory)
     recipientFactory = moduleRef.get(RecipientFactory)
+    tokenFactory = moduleRef.get(TokenFactory)
 
     await app.init()
   })
