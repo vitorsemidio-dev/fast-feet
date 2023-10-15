@@ -46,8 +46,9 @@ model Order {
   recipientId String @map("recipient_id")
   recipient   User   @relation("recipient", fields: [recipientId], references: [id])
 
-  shipperId String? @map("shipper_id")
-  shipper   User?   @relation("shipper", fields: [shipperId], references: [id])
+  shipperId String?   @map("shipper_id")
+  shipper   User?     @relation("shipper", fields: [shipperId], references: [id])
+  shippedAt DateTime? @map("shipped_at")
 
   street       String  @map("street")
   number       String  @map("number")
