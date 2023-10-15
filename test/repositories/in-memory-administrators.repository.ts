@@ -1,4 +1,4 @@
-import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
+import { AdministratorsRepository } from '@/core/repositories/administrators.repository'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
 
 export class InMemoryAdministratorsRepository

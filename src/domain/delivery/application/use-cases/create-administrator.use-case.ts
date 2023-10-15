@@ -1,5 +1,5 @@
 import { Either, left, right } from '@/core/either'
-import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
+import { AdministratorsRepository } from '@/core/repositories/administrators.repository'
 import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
 import { Injectable } from '@nestjs/common'

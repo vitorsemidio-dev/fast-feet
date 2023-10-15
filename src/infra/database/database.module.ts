@@ -1,4 +1,4 @@
-import { AdministratorsRepository } from '@/core/repositories/administrators.repositories'
+import { AdministratorsRepository } from '@/core/repositories/administrators.repository'
 import { DeliveryDriversRepository } from '@/core/repositories/delivery-drivers.repository'
 import { OrdersRepository } from '@/core/repositories/orders.repository'
 import { RecipientsRepository } from '@/core/repositories/recipients.repository'
