@@ -1,4 +1,4 @@
-import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { CPF } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 import { AppModule } from '@/infra/app.module'
 import { PrismaService } from '@/infra/database/services/prisma.service'
@@ -50,7 +50,7 @@ describe('CreateAdministratorController (E2E)', () => {
       expect(userOnDatabase).toBeTruthy()
       expect(userOnDatabase?.name).toEqual(input.name)
       expect(userOnDatabase?.cpf).toEqual(input.cpf)
-      expect(userOnDatabase?.role).toEqual(Roles.ADMINISTRATOR)
+      expect(userOnDatabase?.role).toEqual(UserRoles.ADMINISTRATOR)
       expect(userOnDatabase?.password).not.toEqual(input.password)
     })
   })

@@ -1,6 +1,6 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Administrator } from '@/domain/delivery/enterprise/entities/administrator'
-import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 
 describe('Administrator', () => {
   it('should be able to create new administrator', () => {
@@ -59,6 +59,6 @@ describe('Administrator', () => {
       name: 'Administrator',
       password: '123456',
     })
-    expect(administrator.role).toEqual(Roles.ADMINISTRATOR)
+    expect(administrator.role).toEqual(UserRoles.ADMINISTRATOR)
   })
 })

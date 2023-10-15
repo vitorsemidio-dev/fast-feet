@@ -1,4 +1,4 @@
-import { Public } from '@/infra/auth/public'
+import { Public } from '@/infra/auth/public.decorator'
 import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 import { z } from 'zod'
 import { AuthenticateUseCase } from '../../../domain/delivery/application/use-cases/authenticate.use-case'

@@ -2,7 +2,7 @@ import {
   CreateAdministratorUseCase,
   CreateAdministratorUseCaseInput,
 } from '@/domain/delivery/application/use-cases/create-administrator.use-case'
-import { Roles } from '@/domain/delivery/enterprise/entities/roles.enum'
+import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
 import { FakeHasher } from 'test/cryptography/faker-hash'
 import { InMemoryAdministratorsRepository } from 'test/repositories/in-memory-administrators.repository'
 import { CPFAlreadyExistsError } from './errors/cpf-already-exists.error'
@@ -78,7 +78,7 @@ describe('CreateAdministratorUseCase', () => {
         cpf: expect.any(Object),
         name: input.name,
         password: expect.any(String),
-        role: Roles.ADMINISTRATOR,
+        role: UserRoles.ADMINISTRATOR,
       }),
     )
   })
