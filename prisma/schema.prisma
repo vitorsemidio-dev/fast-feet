@@ -26,6 +26,8 @@ model User {
 
   shipments Order[] @relation("shipper")
 
+  deliveries Order[] @relation("delivery_driver")
+
   @@map("users")
 }
 
@@ -49,6 +51,11 @@ model Order {
   shipperId String?   @map("shipper_id")
   shipper   User?     @relation("shipper", fields: [shipperId], references: [id])
   shippedAt DateTime? @map("shipped_at")
+
+  deliveredAt      DateTime? @map("delivered_at")
+  deliveryDriverId String?   @map("delivery_driver_id")
+  deliveryDriver   User?     @relation("delivery_driver", fields: [deliveryDriverId], references: [id])
+  photoUrl         String?   @map("photo_url")
 
   street       String  @map("street")
   number       String  @map("number")
