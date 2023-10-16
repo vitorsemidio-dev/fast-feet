@@ -72,7 +72,7 @@ export class PrismaOrderMapper {
       shipperId: data.shippedBy?.toString(),
       shippedAt: data.shippedAt,
       deliveredAt: data.deliveryAt,
-      // deliveryDriverId: data.deliveryBy?.toString(),
+      deliveryDriverId: data.deliveryBy?.toString(),
       photoUrl: data.photoURL,
     }
   }

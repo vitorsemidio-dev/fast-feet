@@ -81,7 +81,7 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
       })
     })
 
-    it.only('should be able to update status to DELIVERED on database', async () => {
+    it('should be able to update status to DELIVERED on database', async () => {
       const input = makeRequestBody()
 
       const response = await request(app.getHttpServer())
@@ -96,10 +96,10 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
       })
 
       expect(orderOnDB?.status).toBe(OrderStatus.DELIVERED)
-      expect(orderOnDB?.photoUrl).toBeDefined()
+      expect(orderOnDB?.photoUrl).toBeTruthy()
       expect(orderOnDB?.photoUrl).toEqual(input.photoURL)
       expect(orderOnDB?.deliveredAt).toBeTruthy()
-      // expect(orderOnDB?.deliveryDriverId).toBe(deliveryDriver.id.toString())
+      expect(orderOnDB?.deliveryDriverId).toBe(deliveryDriver.id.toString())
     })
 
     it('should return 403 if user is not DELIVERY_DRIVER', async () => {
