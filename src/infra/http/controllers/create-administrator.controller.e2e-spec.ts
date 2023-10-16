@@ -5,6 +5,19 @@ import { PrismaService } from '@/infra/database/services/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
+import { fakerPtBr } from 'test/utils/faker'
+import { CreateAdministratorBody } from './create-administrator.controller'
+
+const makeRequestBody = (
+  override: Partial<CreateAdministratorBody> = {},
+): CreateAdministratorBody => {
+  return {
+    cpf: CPF.makeRandom().value,
+    name: fakerPtBr.name.fullName(),
+    password: fakerPtBr.internet.password(),
+    ...override,
+  }
+}
 
 describe('CreateAdministratorController (E2E)', () => {
   let app: INestApplication
@@ -22,17 +35,15 @@ describe('CreateAdministratorController (E2E)', () => {
     await app.init()
   })
 
-  describe('[POST] /administrators', () => {
-    const input = {
-      name: 'Administrator',
-      password: '123456',
-      cpf: CPF.makeRandom().value,
-    }
+  const controller = '/administrators'
+
+  describe(`[POST] ${controller}`, () => {
+    const input = makeRequestBody()
     let response: request.Response
 
     beforeAll(async () => {
       response = await request(app.getHttpServer())
-        .post('/administrators')
+        .post(`${controller}`)
         .send(input)
     })
 
@@ -55,18 +66,14 @@ describe('CreateAdministratorController (E2E)', () => {
     })
   })
 
-  describe('[POST] /administrators', () => {
-    const input = {
-      name: 'Administrator',
-      password: '123456',
-      cpf: CPF.makeRandom().value,
-    }
+  describe(`[POST] ${controller}`, () => {
+    const input = makeRequestBody()
     let response: request.Response
 
     beforeAll(async () => {
-      await request(app.getHttpServer()).post('/administrators').send(input)
+      await request(app.getHttpServer()).post(`${controller}`).send(input)
       response = await request(app.getHttpServer())
-        .post('/administrators')
+        .post(`${controller}`)
         .send(input)
     })
 

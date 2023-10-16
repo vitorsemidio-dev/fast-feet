@@ -1,5 +1,4 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { Encrypter } from '@/domain/delivery/application/cryptography/encrypter'
 import { OrderStatus } from '@/domain/delivery/enterprise/entities/order'
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
 import { UserRoles } from '@/domain/delivery/enterprise/entities/user-roles.enum'
@@ -39,7 +38,6 @@ describe('CreateOrdersController (E2E)', () => {
   // Depedencies
   let app: INestApplication
   let prisma: PrismaService
-  let jwtEncrypter: Encrypter
   let recipientFactory: RecipientFactory
   let tokenFactory: TokenFactory
 
@@ -51,14 +49,15 @@ describe('CreateOrdersController (E2E)', () => {
 
     app = moduleRef.createNestApplication()
     prisma = moduleRef.get(PrismaService)
-    jwtEncrypter = moduleRef.get(Encrypter)
     recipientFactory = moduleRef.get(RecipientFactory)
     tokenFactory = moduleRef.get(TokenFactory)
 
     await app.init()
   })
 
-  describe('[POST] /orders', () => {
+  const controller = '/orders'
+
+  describe(`[POST] ${controller}`, () => {
     // Shared variables
     let recipient: Recipient
     let token: string
@@ -79,7 +78,7 @@ describe('CreateOrdersController (E2E)', () => {
 
     it('should return status code 201 when create', async () => {
       const response = await request(app.getHttpServer())
-        .post('/orders')
+        .post(`${controller}`)
         .set('Authorization', `Bearer ${token}`)
         .send(input)
 
@@ -90,7 +89,7 @@ describe('CreateOrdersController (E2E)', () => {
       const recipientIdNotFound = new UniqueEntityId().toString()
       input.recipientId = recipientIdNotFound
       const response = await request(app.getHttpServer())
-        .post('/orders')
+        .post(`${controller}`)
         .set('Authorization', `Bearer ${token}`)
         .send(input)
 
@@ -99,7 +98,7 @@ describe('CreateOrdersController (E2E)', () => {
 
     it('should not return status code 404 when controller is register', async () => {
       const response = await request(app.getHttpServer())
-        .post('/orders')
+        .post(`${controller}`)
         .set('Authorization', `Bearer ${token}`)
         .send(input)
 
@@ -110,7 +109,7 @@ describe('CreateOrdersController (E2E)', () => {
       input.name = new UniqueEntityId().toString()
       input.city = 'My City Test'
       const response = await request(app.getHttpServer())
-        .post('/orders')
+        .post(`${controller}`)
         .set('Authorization', `Bearer ${token}`)
         .send(input)
 
@@ -131,7 +130,7 @@ describe('CreateOrdersController (E2E)', () => {
 
     it('should return status code 401 when user is not authenticated', async () => {
       const response = await request(app.getHttpServer())
-        .post('/orders')
+        .post(`${controller}`)
         .send(input)
 
       expect(response.statusCode).toBe(401)
@@ -143,7 +142,7 @@ describe('CreateOrdersController (E2E)', () => {
       })
 
       const response = await request(app.getHttpServer())
-        .post('/orders')
+        .post(`${controller}`)
         .set('Authorization', `Bearer ${token}`)
         .send(input)
 
@@ -156,7 +155,7 @@ describe('CreateOrdersController (E2E)', () => {
       })
 
       const response = await request(app.getHttpServer())
-        .post('/orders')
+        .post(`${controller}`)
         .set('Authorization', `Bearer ${token}`)
         .send(input)
 

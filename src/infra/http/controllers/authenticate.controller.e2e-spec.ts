@@ -5,6 +5,18 @@ import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { makeAdministrator } from 'test/factories/administrator.factory'
+import { fakerPtBr } from 'test/utils/faker'
+import { AuthenticateBody } from './authenticate.controller'
+
+const makeRequestBody = (
+  override: Partial<AuthenticateBody> = {},
+): AuthenticateBody => {
+  return {
+    cpf: CPF.makeRandom().value,
+    password: fakerPtBr.internet.password(),
+    ...override,
+  }
+}
 
 describe('AuthenticateController (E2E)', () => {
   let app: INestApplication
@@ -21,11 +33,10 @@ describe('AuthenticateController (E2E)', () => {
     await app.init()
   })
 
+  const controller = '/sessions'
+
   describe('[POST] /sessions', () => {
-    const input = {
-      password: '123456',
-      cpf: CPF.makeRandom().value,
-    }
+    const input = makeRequestBody()
     let response: request.Response
 
     beforeAll(async () => {
@@ -44,7 +55,7 @@ describe('AuthenticateController (E2E)', () => {
         .send(admRequest)
 
       response = await request(app.getHttpServer())
-        .post('/sessions')
+        .post(`${controller}`)
         .send(input)
     })
 
@@ -57,16 +68,16 @@ describe('AuthenticateController (E2E)', () => {
     })
   })
 
-  describe('[POST] /sessions', () => {
-    const input = {
-      cpf: 'wrong-cpf',
-      password: 'wrong-password',
-    }
+  describe(`[POST] ${controller}`, () => {
+    const input = makeRequestBody()
+    input.cpf = 'wrong-cpf'
+    input.password = 'wrong-password'
+
     let response: request.Response
 
     beforeAll(async () => {
       response = await request(app.getHttpServer())
-        .post('/sessions')
+        .post(`${controller}`)
         .send(input)
     })
 
