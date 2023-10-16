@@ -115,7 +115,18 @@ export class CPF {
 
   static makeRandom(_index?: number): CPF {
     const cpfs = CPF.getCPFValids()
-    const index = Math.floor(Math.random() * cpfs.length)
+    const index = SafeCPFIndexGenerator.safeIndex
     return CPF.create(cpfs[_index ?? index])
+  }
+}
+
+export class SafeCPFIndexGenerator {
+  static currentIndex = 0
+  static maxIndex = 15
+
+  static get safeIndex() {
+    const currentIndex = SafeCPFIndexGenerator.currentIndex
+    SafeCPFIndexGenerator.currentIndex++
+    return currentIndex % SafeCPFIndexGenerator.maxIndex
   }
 }

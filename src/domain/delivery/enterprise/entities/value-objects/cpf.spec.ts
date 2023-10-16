@@ -1,6 +1,7 @@
 import {
   CPF,
   InvalidCPFError,
+  SafeCPFIndexGenerator,
 } from '@/domain/delivery/enterprise/entities/value-objects/cpf'
 
 describe('CPF', () => {
@@ -76,5 +77,35 @@ describe('CPF', () => {
     const cpf = CPF.makeRandom()
 
     expect(cpf.value).toEqual(expect.any(String))
+  })
+})
+
+describe('SafeCPFIndexGenerator', () => {
+  it('should be able to generate a safe index sequentially', () => {
+    SafeCPFIndexGenerator.currentIndex = 0
+    CPF.makeRandom()
+    CPF.makeRandom()
+    CPF.makeRandom()
+
+    const cpf = CPF.makeRandom()
+
+    expect(cpf.value).toEqual(CPF['getCPFValids']()[3])
+  })
+
+  it('should be able restart cpf generator when currentIndex target maxIndex', () => {
+    SafeCPFIndexGenerator.currentIndex = 0
+    SafeCPFIndexGenerator.maxIndex = 5
+
+    const cpf0 = CPF.makeRandom()
+
+    CPF.makeRandom()
+    CPF.makeRandom()
+    CPF.makeRandom()
+    CPF.makeRandom()
+
+    const cpf6 = CPF.makeRandom()
+
+    expect(cpf0.value).toEqual(CPF['getCPFValids']()[0])
+    expect(cpf6.value).toEqual(CPF['getCPFValids']()[0])
   })
 })
