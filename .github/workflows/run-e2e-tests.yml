@@ -1,22 +1,55 @@
-name: Geração de Chaves SSH
+name: Run E2E Tests
 
-on:
-  pull_request:
-    branches:
-      - main
+on: [pull_request]
 
 jobs:
-  generate-keys:
+  run-e2e-tests:
+    name: Run E2E Tests
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: bitnami/postgresql
+        ports:
+          - 5432:5432
+        env:
+          POSTGRESQL_USERNAME: postgress
+          POSTGRESQL_PASSWORD: docker
+          POSTGRESQL_DATABASE: fast_feet_test
+
     steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Health Check
+        run: |
+          if nc -zvw3 localhost 5432; then
+            echo "Database is up and running!"
+          else
+            echo "Database is down!"
+            exit 1
+          fi
+
       - name: Gere um par de chaves SSH
         run: |
           ssh-keygen -t rsa -b 2048 -f mykey -N ""
 
-      - name: Codifique as chaves em base64 e armazene como segredos
+      - name: Codifique as chaves em base64 e armazene como variáveis de ambiente
         run: |
           PRIVATE_KEY_BASE64=$(cat mykey | base64)
           PUBLIC_KEY_BASE64=$(cat mykey.pub | base64)
-          echo "::set-secret name=PRIVATE_KEY::${PRIVATE_KEY_BASE64}"
-          echo "::set-secret name=PUBLIC_KEY::${PUBLIC_KEY_BASE64}"
+
+          echo "PRIVATE_KEY=${PRIVATE_KEY_BASE64}" >> $GITHUB_ENV
+          echo "PUBLIC_KEY=${PUBLIC_KEY_BASE64}" >> $GITHUB_ENV
+
+      - run: npm run test:e2e
+        env:
+          DATABASE_URL: 'postgresql://docker:docker@localhost:5432/fast_feet_test?schema=public'
+          PRIVATE_KEY: ${{ env.PRIVATE_KEY }}
+          PUBLIC_KEY: ${{ env.PUBLIC_KEY }}
