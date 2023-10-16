@@ -102,6 +102,28 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
       expect(orderOnDB?.deliveryDriverId).toBe(deliveryDriver.id.toString())
     })
 
+    it('should return 403 if delivery driver is not shipper', async () => {
+      const input = makeRequestBody()
+      const wrongDeliveryDriver = await deliveryDriverFactory.make()
+      const _order = await orderFactory.make({
+        recipientId: recipient.id,
+        status: OrderStatus.SHIPPED,
+        shippedBy: deliveryDriver.id,
+      })
+
+      token = await tokenFactory.make({
+        sub: wrongDeliveryDriver.id.toString(),
+        role: wrongDeliveryDriver.role,
+      })
+
+      const response = await request(app.getHttpServer())
+        .patch(`${controller}`.replace(':orderId', _order.id.toString()))
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
+      expect(response.statusCode).toBe(403)
+    })
+
     it('should return 403 if user is not DELIVERY_DRIVER', async () => {
       token = await tokenFactory.make({
         role: UserRoles.RECIPIENT,
