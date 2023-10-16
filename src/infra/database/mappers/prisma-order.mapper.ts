@@ -25,6 +25,15 @@ export class PrismaOrderMapper {
           street: raw.street,
         }),
         recipientId: new UniqueEntityId(raw.recipientId),
+        shippedBy: raw.shipperId
+          ? new UniqueEntityId(raw.shipperId)
+          : undefined,
+        shippedAt: raw.shippedAt ? new Date(raw.shippedAt) : undefined,
+        deliveryAt: raw.deliveredAt ? new Date(raw.deliveredAt) : undefined,
+        deliveryBy: raw.deliveryDriverId
+          ? new UniqueEntityId(raw.deliveryDriverId)
+          : undefined,
+        photoURL: raw.photoUrl ? raw.photoUrl : undefined,
       },
       new UniqueEntityId(raw.id),
     )
@@ -62,6 +71,9 @@ export class PrismaOrderMapper {
       complement: data.address.complement,
       shipperId: data.shippedBy?.toString(),
       shippedAt: data.shippedAt,
+      deliveredAt: data.deliveryAt,
+      deliveryDriverId: data.deliveryBy?.toString(),
+      photoUrl: data.photoURL,
     }
   }
 

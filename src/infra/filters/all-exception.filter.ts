@@ -1,4 +1,5 @@
 import { CPFAlreadyExistsError } from '@/domain/delivery/application/use-cases/errors/cpf-already-exists.error'
+import { InvalidDeliveryUpdateError } from '@/domain/delivery/application/use-cases/errors/invalid-delivery-update.error'
 import { ResourceNotFoundError } from '@/domain/delivery/application/use-cases/errors/resource-not-found.error'
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error'
 import {
@@ -40,6 +41,10 @@ export class AllExceptionFilter implements ExceptionFilter {
       case WrongCredentialsError:
         status = HttpStatus.UNAUTHORIZED
         message = (exception as WrongCredentialsError).message
+        break
+      case InvalidDeliveryUpdateError:
+        status = HttpStatus.FORBIDDEN
+        message = (exception as InvalidDeliveryUpdateError).message
         break
       case CPFAlreadyExistsError:
         status = HttpStatus.CONFLICT
