@@ -1,0 +1,22 @@
+name: Geração de Chaves SSH
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  generate-keys:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Gere um par de chaves SSH
+        run: |
+          ssh-keygen -t rsa -b 2048 -f mykey -N ""
+
+      - name: Codifique as chaves em base64 e armazene como segredos
+        run: |
+          PRIVATE_KEY_BASE64=$(cat mykey | base64)
+          PUBLIC_KEY_BASE64=$(cat mykey.pub | base64)
+          echo "::set-secret name=PRIVATE_KEY::${PRIVATE_KEY_BASE64}"
+          echo "::set-secret name=PUBLIC_KEY::${PUBLIC_KEY_BASE64}"
