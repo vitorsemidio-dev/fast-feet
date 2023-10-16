@@ -1,3 +1,4 @@
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { DeliveryDriver } from '@/domain/delivery/enterprise/entities/delivery-driver'
 import { Order, OrderStatus } from '@/domain/delivery/enterprise/entities/order'
 import { Recipient } from '@/domain/delivery/enterprise/entities/recipient'
@@ -130,14 +131,32 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
       const response = await request(app.getHttpServer())
         .patch(`${controller}`.replace(':orderId', order.id.toString()))
         .set('Authorization', `Bearer ${token}`)
+        .send(input)
 
       expect(response.statusCode).toBe(403)
+    })
+
+    it('should return 404 if not found order', async () => {
+      token = await tokenFactory.make({
+        sub: deliveryDriver.id.toString(),
+        role: deliveryDriver.role,
+      })
+
+      const wrongOrderId = new UniqueEntityId().toString()
+
+      const response = await request(app.getHttpServer())
+        .patch(`${controller}`.replace(':orderId', wrongOrderId))
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+
+      expect(response.statusCode).toBe(404)
     })
 
     it('should not return status code 404 when controller is register', async () => {
       const response = await request(app.getHttpServer())
         .patch(`${controller}`.replace(':orderId', order.id.toString()))
         .set('Authorization', `Bearer ${token}`)
+        .send(input)
 
       expect(response.statusCode).not.toBe(404)
     })
