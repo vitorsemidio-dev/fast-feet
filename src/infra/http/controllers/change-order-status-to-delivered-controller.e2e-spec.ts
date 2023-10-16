@@ -98,8 +98,8 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
       expect(orderOnDB?.status).toBe(OrderStatus.DELIVERED)
       expect(orderOnDB?.photoUrl).toBeDefined()
       expect(orderOnDB?.photoUrl).toEqual(input.photoURL)
+      expect(orderOnDB?.deliveredAt).toBeTruthy()
       // expect(orderOnDB?.deliveryDriverId).toBe(deliveryDriver.id.toString())
-      // expect(orderOnDB?.deliveredAt).toBeDefined()
     })
 
     it('should return 403 if user is not DELIVERY_DRIVER', async () => {
