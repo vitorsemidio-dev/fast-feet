@@ -63,17 +63,12 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
     let token: string
     let order: Order
     let deliveryDriver: DeliveryDriver
+    let input: ChangeOrderStatusToDeliveriedBody
 
     beforeAll(async () => {
       recipient = await recipientFactory.make()
 
       deliveryDriver = await deliveryDriverFactory.make()
-
-      order = await orderFactory.make({
-        recipientId: recipient.id,
-        status: OrderStatus.SHIPPED,
-        shippedBy: deliveryDriver.id,
-      })
 
       token = await tokenFactory.make({
         sub: deliveryDriver.id.toString(),
@@ -81,9 +76,18 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
       })
     })
 
-    it('should be able to update status to DELIVERED on database', async () => {
-      const input = makeRequestBody()
+    beforeEach(async () => {
+      input = makeRequestBody()
 
+      order = await orderFactory.make({
+        recipientId: recipient.id,
+        status: OrderStatus.SHIPPED,
+        shippedBy: deliveryDriver.id,
+      })
+    })
+
+    it('should be able to update status to DELIVERED on database', async () => {
+      input.photoURL = 'http://photo-test.com'
       const response = await request(app.getHttpServer())
         .patch(`${controller}`.replace(':orderId', order.id.toString()))
         .set('Authorization', `Bearer ${token}`)
@@ -97,19 +101,13 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
 
       expect(orderOnDB?.status).toBe(OrderStatus.DELIVERED)
       expect(orderOnDB?.photoUrl).toBeTruthy()
-      expect(orderOnDB?.photoUrl).toEqual(input.photoURL)
+      expect(orderOnDB?.photoUrl).toEqual('http://photo-test.com')
       expect(orderOnDB?.deliveredAt).toBeTruthy()
       expect(orderOnDB?.deliveryDriverId).toBe(deliveryDriver.id.toString())
     })
 
     it('should return 403 if delivery driver is not shipper', async () => {
-      const input = makeRequestBody()
       const wrongDeliveryDriver = await deliveryDriverFactory.make()
-      const _order = await orderFactory.make({
-        recipientId: recipient.id,
-        status: OrderStatus.SHIPPED,
-        shippedBy: deliveryDriver.id,
-      })
 
       token = await tokenFactory.make({
         sub: wrongDeliveryDriver.id.toString(),
@@ -117,7 +115,7 @@ describe('ChangeOrderStatusToDeliveredController (E2E)', () => {
       })
 
       const response = await request(app.getHttpServer())
-        .patch(`${controller}`.replace(':orderId', _order.id.toString()))
+        .patch(`${controller}`.replace(':orderId', order.id.toString()))
         .set('Authorization', `Bearer ${token}`)
         .send(input)
 
